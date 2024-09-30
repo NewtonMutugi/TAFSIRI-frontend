@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Tafsiri from './views/tafsiri/Tafsiri'; // Adjust the path as needed
+import userManager from './utils/UserManager'; // Ensure the path is correct
 
-function App() {
+const App = () => {
+  useEffect(() => {
+    // Handle the redirect callback
+    userManager
+      .signinRedirectCallback()
+      .then((user) => {
+        console.log('User signed in:', user);
+        // You can redirect to a specific route after login
+      })
+      .catch((error) => {
+        console.error('Error handling redirect callback:', error);
+        return;
+      });
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/signin-oidc" element={<div>Loading...</div>} />
+        <Route path="/" element={<Tafsiri />} />
+        {/* Add other routes as needed */}
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;

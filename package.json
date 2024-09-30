@@ -41,5 +41,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "axios": "^1.7.7",
+    "oidc-client": "^1.11.5",
+    "react-router-dom": "^6.26.2"
   }
 }
