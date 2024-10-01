@@ -15,8 +15,6 @@ config = {
 
 const userManager = new UserManager(config);
 
-export default userManager;
-
 export async function loadUserFromStorage(store) {
   try {
     let user = await userManager.getUser();
@@ -58,3 +56,5 @@ export function signoutRedirectCallback() {
   userManager.removeUser();
   return userManager.signoutRedirectCallback();
 }
+
+export default userManager;
