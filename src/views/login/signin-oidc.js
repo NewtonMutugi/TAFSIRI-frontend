@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signinRedirectCallback } from '../../utils/UserManager'; 
+import { signinRedirectCallback } from '../../utils/UserManager';
 
 function SigninOidc() {
   const navigate = useNavigate();
   useEffect(() => {
     async function signinAsync() {
       await signinRedirectCallback();
-      navigate('/');
+      navigate('/tafsiri');
     }
     signinAsync();
   }, [navigate]);

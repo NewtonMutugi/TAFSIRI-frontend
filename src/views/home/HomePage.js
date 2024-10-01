@@ -1,7 +1,7 @@
 import userManager from '../../utils/UserManager'; // Ensure the path is correct
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const HomePage = async () => {
+const HomePage = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const HomePage = async () => {
   return (
     <div>
       <h1>Home Page</h1>
-      <p>current User is {user}</p>
+      <p>Current User is {user}</p>
     </div>
   );
 };

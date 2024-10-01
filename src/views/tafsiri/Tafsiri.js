@@ -1,5 +1,5 @@
 // src/components/Tafsiri.js
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   Stack,
   Typography,
