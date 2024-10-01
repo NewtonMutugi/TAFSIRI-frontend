@@ -1,5 +1,4 @@
-// src/components/Tafsiri.js
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Stack,
   Typography,
@@ -27,15 +26,14 @@ import { FileCopy as FileCopyIcon } from '@mui/icons-material';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { materialLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import RateReviewIcon from '@mui/icons-material/RateReview';
-// import { useNavigate } from 'react-router-dom'; // For navigation
 import userManager from '../../utils/UserManager';
+
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const SUPERSET_URL = process.env.REACT_APP_SUPERSET_URL;
 const SUPERSET_USERNAME = process.env.REACT_APP_SUPERSET_USERNAME;
 const SUPERSET_PASSWORD = process.env.REACT_APP_SUPERSET_PASSWORD;
 
 const Tafsiri = () => {
-  // const navigate = useNavigate(); // For navigation
   const [query, setQuery] = useState('');
   const [sqlQuery, setSqlQuery] = useState('');
   const [data, setData] = useState([]);
@@ -47,16 +45,14 @@ const Tafsiri = () => {
   const [feedback, setFeedback] = useState('');
   const [feedbackSent, setFeedbackSent] = useState(false);
   const [feedbackError, setFeedbackError] = useState('');
-  // const [vizType, setVizType] = useState('table');
-  // const handleChange = (event) => {
-  //   setVizType(event.target.value);
-  // };
+  const [vizType, setVizType] = useState('table');
+  const handleChange = (event) => {
+    setVizType(event.target.value);
+  };
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [ratingValue, setRatingValue] = useState(2);
-  const [username, setUsername] = useState('');
-
   const style = {
     position: 'absolute',
     top: '50%',
@@ -79,6 +75,7 @@ const Tafsiri = () => {
         console.error('Failed to copy text: ', err);
       });
   };
+  // Variable that will store objectId
 
   const handleGenerateSQL = async () => {
     setLoading(true);
@@ -89,21 +86,13 @@ const Tafsiri = () => {
     setQueryGenerated(false);
     console.log('Backend URL:' + BACKEND_URL);
     console.log('Superset URL' + SUPERSET_URL);
-
-    // let user_id = '';
-    // if (user && user.profile) {
-    //   user_id = user.profile.sub;
-    // } else {
-    //   console.error('User is null or does not have a profile');
-    // }
     try {
       // Fetch the user and get user_id
       const user = await userManager.getUser();
       const user_id = user.profile.sub;
-      setUsername(user.profile.name);
 
       const response = await fetch(
-        `${BACKEND_URL}/query_from_natural_language`,
+        BACKEND_URL + '/query_from_natural_language',
         {
           method: 'POST',
           headers: {
@@ -134,8 +123,6 @@ const Tafsiri = () => {
         } else {
           setError(result.message || 'Failed to execute SQL.');
         }
-      } else {
-        setError(result.message || 'Failed to execute SQL.');
       }
     } catch (error) {
       console.error('Error generating SQL:', error);
@@ -161,7 +148,7 @@ const Tafsiri = () => {
     }
 
     try {
-      const response = await fetch(`${BACKEND_URL}/rate/${responseId}`, {
+      const response = await fetch(BACKEND_URL + `/rate/${responseId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -184,13 +171,12 @@ const Tafsiri = () => {
       setFeedbackError('An unexpected error occurred while sending feedback.');
     }
   };
-
   // Handles running the query on Apache Superset
   const handleSuperset = async () => {
     setLoading(true);
     try {
       // Get Access token from Superset
-      const response = await fetch(`${SUPERSET_URL}/api/v1/security/login`, {
+      const response = await fetch(SUPERSET_URL + '/api/v1/security/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -213,7 +199,7 @@ const Tafsiri = () => {
           .replace('T', '_')
           .split('.')[0];
         // Save Query on Superset instance
-        const response2 = await fetch(`${SUPERSET_URL}/api/v1/saved_query/`, {
+        const response2 = await fetch(SUPERSET_URL + '/api/v1/saved_query/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -223,7 +209,7 @@ const Tafsiri = () => {
           body: JSON.stringify({
             db_id: 2,
             description: '',
-            label: `tafsiriquery_${date}`,
+            label: 'tafsiriquery' + date,
             sql: sqlQuery,
             schema: 'dbo',
           }),
@@ -233,13 +219,13 @@ const Tafsiri = () => {
           const result2 = await response2.json();
           console.log('Saved query on Superset:', result2);
           window
-            .open(`${SUPERSET_URL}/sqllab?savedQueryId=${result2.id}`, '_blank')
+            .open(SUPERSET_URL + '/sqllab?savedQueryId=' + result2.id, '_blank')
             .focus();
         } else {
           console.error('Failed to save query on Superset.');
         }
       } else {
-        console.error('Failed to log in to Superset.');
+        console.error('Failed to save query on Superset.');
       }
     } catch (error) {
       console.error('Error logging in to Superset:', error);
@@ -247,15 +233,12 @@ const Tafsiri = () => {
       setLoading(false);
     }
   };
-
-  const userName = username;
-
   return (
     <Box
       sx={{
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'flex-start',
+        alignItems: 'center',
         p: 2,
       }}
     >
@@ -286,25 +269,9 @@ const Tafsiri = () => {
               }}
             >
               <em>
-                Transformational AI For SQL Inferences and Reporting Integration
+                Trasformational AI For SQL Inferences and Reporting Integration
               </em>
             </Typography>
-
-            {/* Display Logged-in User */}
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-                p: 1,
-                bgcolor: '#e3f2fd',
-                borderRadius: 1,
-              }}
-            >
-              <Typography variant="body1" component="p">
-                Logged in as: <strong>{userName}</strong>
-              </Typography>
-            </Box>
 
             <TextField
               id="outlined-textarea"
@@ -369,7 +336,6 @@ const Tafsiri = () => {
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
-                  alignItems: 'center',
                 }}
               >
                 <Typography variant="body1" component="p">
@@ -395,6 +361,15 @@ const Tafsiri = () => {
                     )}
                   </Button>
                 </Box>
+
+                {/* <FormControl sx={{ width: 320 }}>
+                  <InputLabel id="labelVizType">Select Visualization</InputLabel>
+                  <Select labelId="labelVizType" id="vizType" value={vizType} onChange={handleChange} label="Select Visualization">
+                    <MenuItem value="table">Table</MenuItem>
+                    <MenuItem value="pie-chart">Pie Chart</MenuItem>
+                    <MenuItem value="bar-chart">Bar Chart</MenuItem>
+                  </Select>
+                </FormControl> */}
               </div>
             ) : null}
 
