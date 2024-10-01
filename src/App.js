@@ -1,15 +1,13 @@
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import Loadable from 'react-loadable';
-import { Routes, Route, HashRouter } from 'react-router-dom';
-import Tafsiri from './views/tafsiri/Tafsiri'; // Adjust the path as needed
-import AuthProvider from './utils/AuthProvider'; // Adjust the path as needed
+import { Routes, Route } from 'react-router-dom';
+import AuthProvider from './utils/AuthProvider';
 import userManager, { loadUserFromStorage } from './utils/UserManager';
 import { useEffect } from 'react';
 import { store } from './store';
 import Loader from './components/Loader';
 import { LOADING_DELAY } from './constants';
-import HomePage from './views/home/HomePage';
+import DefaultLayout from './layouts/DefaultLayout/DefaultLayout';
 
 const SigninOidc = Loadable({
   loader: () => import('./views/login/signin-oidc'),
@@ -32,14 +30,9 @@ const App = () => {
   return (
     <AuthProvider userManager={userManager} store={store}>
       <Routes>
-        <Route path="/signout-oidc" component={SignoutOidc} />
-        <Route path="/signin-oidc" component={SigninOidc} />
-        <Route path="/tafsiri" element={<Tafsiri />} />
-        <Route
-          path="/"
-          name="Home"
-          render={(props) => <HomePage {...props} />}
-        />
+        <Route path="/signout-oidc" element={<SignoutOidc />} />
+        <Route path="/signin-oidc" element={<SigninOidc />} />
+        <Route path="/*" element={<DefaultLayout />} />
       </Routes>
     </AuthProvider>
   );
