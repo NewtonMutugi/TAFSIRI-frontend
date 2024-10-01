@@ -7,7 +7,9 @@ import { Provider } from 'react-redux';
 import { store, persistor } from './store';
 import { PersistGate } from 'redux-persist/integration/react';
 import Loader from './components/Loader';
-import { BrowserRouter as Router } from 'react-router-dom';
+
+import { RecoilRoot } from 'recoil';
+import { CookiesProvider } from 'react-cookie';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -15,9 +17,11 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={<Loader />} persistor={persistor}>
-        <Router>
-          <App />
-        </Router>
+        <RecoilRoot>
+          <CookiesProvider>
+            <App />
+          </CookiesProvider>
+        </RecoilRoot>
       </PersistGate>
     </Provider>
   </React.StrictMode>
