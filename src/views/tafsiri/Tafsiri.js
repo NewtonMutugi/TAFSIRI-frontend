@@ -1,5 +1,5 @@
 // src/components/Tafsiri.js
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Stack,
   Typography,
@@ -27,17 +27,15 @@ import { FileCopy as FileCopyIcon } from '@mui/icons-material';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { materialLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import RateReviewIcon from '@mui/icons-material/RateReview';
-import { useAuth } from '../../utils/AuthContext'; // Adjust the path as needed
-import { useNavigate } from 'react-router-dom'; // For navigation
-
+// import { useNavigate } from 'react-router-dom'; // For navigation
+import userManager from '../../utils/UserManager';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const SUPERSET_URL = process.env.REACT_APP_SUPERSET_URL;
 const SUPERSET_USERNAME = process.env.REACT_APP_SUPERSET_USERNAME;
 const SUPERSET_PASSWORD = process.env.REACT_APP_SUPERSET_PASSWORD;
 
 const Tafsiri = () => {
-  const { user, login } = useAuth();
-  const navigate = useNavigate(); // For navigation
+  // const navigate = useNavigate(); // For navigation
   const [query, setQuery] = useState('');
   const [sqlQuery, setSqlQuery] = useState('');
   const [data, setData] = useState([]);
@@ -49,14 +47,16 @@ const Tafsiri = () => {
   const [feedback, setFeedback] = useState('');
   const [feedbackSent, setFeedbackSent] = useState(false);
   const [feedbackError, setFeedbackError] = useState('');
-  const [vizType, setVizType] = useState('table');
-  const handleChange = (event) => {
-    setVizType(event.target.value);
-  };
+  // const [vizType, setVizType] = useState('table');
+  // const handleChange = (event) => {
+  //   setVizType(event.target.value);
+  // };
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [ratingValue, setRatingValue] = useState(2);
+  const [username, setUsername] = useState('');
+
   const style = {
     position: 'absolute',
     top: '50%',
@@ -81,12 +81,6 @@ const Tafsiri = () => {
   };
 
   const handleGenerateSQL = async () => {
-    if (!user) {
-      // Optional: Redirect to login if user is not authenticated
-      login();
-      return;
-    }
-
     setLoading(true);
     setSqlQuery(''); // Clear previous SQL query
     setData([]); // Clear previous data
@@ -96,14 +90,18 @@ const Tafsiri = () => {
     console.log('Backend URL:' + BACKEND_URL);
     console.log('Superset URL' + SUPERSET_URL);
 
-    let user_id = '';
-    if (user && user.profile) {
-      user_id = user.profile.sub;
-    } else {
-      console.error('User is null or does not have a profile');
-    }
-
+    // let user_id = '';
+    // if (user && user.profile) {
+    //   user_id = user.profile.sub;
+    // } else {
+    //   console.error('User is null or does not have a profile');
+    // }
     try {
+      // Fetch the user and get user_id
+      const user = await userManager.getUser();
+      const user_id = user.profile.sub;
+      setUsername(user.profile.name);
+
       const response = await fetch(
         `${BACKEND_URL}/query_from_natural_language`,
         {
@@ -250,32 +248,7 @@ const Tafsiri = () => {
     }
   };
 
-  // // Redirect to login if user is not authenticated
-  // useEffect(() => {
-  //   if (user === null) {
-  //     login();
-  //   }
-  //   // Optionally, you can show a loading indicator while checking authentication
-  // }, [user, login]);
-
-  if (!user) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  const userName = user.profile
-    ? user.profile.name || user.profile.preferred_username
-    : 'User';
+  const userName = username;
 
   return (
     <Box

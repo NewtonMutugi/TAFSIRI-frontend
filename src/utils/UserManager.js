@@ -1,4 +1,5 @@
 import { UserManager } from 'oidc-client';
+import { storeUser, storeUserError } from './AuthActions';
 
 let config = {};
 
@@ -15,3 +16,45 @@ config = {
 const userManager = new UserManager(config);
 
 export default userManager;
+
+export async function loadUserFromStorage(store) {
+  try {
+    let user = await userManager.getUser();
+    if (!user) {
+      return store.dispatch(storeUserError());
+    }
+    store.dispatch(storeUser(user));
+  } catch (e) {
+    console.error(`User not found: ${e}`);
+    store.dispatch(storeUserError());
+  }
+}
+
+export function signinRedirect() {
+  return userManager.signinRedirect();
+}
+
+export function signinRedirectCallback() {
+  if (window.location.hash) {
+    try {
+      return userManager.signinRedirectCallback();
+    } catch (e) {
+      console.log(e);
+    }
+  } else {
+    return userManager.signinRedirectCallback();
+  }
+}
+
+export async function signoutRedirect() {
+  let user = await userManager.getUser();
+  await userManager.clearStaleState();
+  await userManager.removeUser();
+  return userManager.signoutRedirect({ id_token_hint: user.id_token });
+}
+
+export function signoutRedirectCallback() {
+  userManager.clearStaleState();
+  userManager.removeUser();
+  return userManager.signoutRedirectCallback();
+}
