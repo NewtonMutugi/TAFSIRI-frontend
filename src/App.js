@@ -1,32 +1,47 @@
-// src/App.js
-import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import Loadable from 'react-loadable';
+import { Routes, Route, HashRouter } from 'react-router-dom';
 import Tafsiri from './views/tafsiri/Tafsiri'; // Adjust the path as needed
-import userManager from './utils/UserManager'; // Ensure the path is correct
+import AuthProvider from './utils/AuthProvider'; // Adjust the path as needed
+import userManager, { loadUserFromStorage } from './utils/UserManager';
+import { useEffect } from 'react';
+import { store } from './store';
+import Loader from './components/Loader';
+import { LOADING_DELAY } from './constants';
+import HomePage from './views/home/HomePage';
+
+const SigninOidc = Loadable({
+  loader: () => import('./views/login/signin-oidc'),
+  loading: Loader,
+  delay: LOADING_DELAY,
+});
+const SignoutOidc = Loadable({
+  loader: () => import('./views/login/signout-oidc'),
+  loading: Loader,
+  delay: LOADING_DELAY,
+});
 
 const App = () => {
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    // Handle the redirect callback
-    userManager
-      .signinRedirectCallback()
-      .then((user) => {
-        console.log('User signed in:', user);
-        // You can redirect to a specific route after login
-      })
-      .catch((error) => {
-        console.error('Error handling redirect callback:', error);
-        return;
-      });
-  }, []);
+    loadUserFromStorage(store);
+  }, [dispatch]);
 
   return (
-    <Router>
+    <AuthProvider userManager={userManager} store={store}>
       <Routes>
-        <Route path="/signin-oidc" element={<div>Loading...</div>} />
-        <Route path="/" element={<Tafsiri />} />
-        {/* Add other routes as needed */}
+        <Route path="/signout-oidc" component={SignoutOidc} />
+        <Route path="/signin-oidc" component={SigninOidc} />
+        <Route path="/tafsiri" element={<Tafsiri />} />
+        <Route
+          path="/"
+          name="Home"
+          render={(props) => <HomePage {...props} />}
+        />
       </Routes>
-    </Router>
+    </AuthProvider>
   );
 };
 
