@@ -1,8 +1,8 @@
 import { CBreadcrumb as AppBreadcrumb } from '@coreui/react';
-import routes from '../routes';
+import routes from '../../routes';
 import { Container } from 'reactstrap';
 import { Route, Routes } from 'react-router-dom';
-import ProtectedRoute from '../utils/protectedRoute';
+import ProtectedRoute from '../../utils/protectedRoute';
 
 const DefaultLayout = () => {
   return (
