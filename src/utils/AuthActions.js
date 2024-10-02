@@ -5,7 +5,7 @@ import {
   STORE_USER_ERROR,
   USER_EXPIRED,
   USER_SIGNED_OUT,
-} from './types';
+} from './actions/types';
 
 export function storeUser(user) {
   setAuthHeader(user.access_token);

@@ -4,14 +4,13 @@ import {
   STORE_USER_ERROR,
   USER_EXPIRED,
   USER_SIGNED_OUT,
-} from '../types';
+} from '../actions/types';
 
 const initialState = {
   user: null,
   isLoadingUser: false,
 };
 
-// eslint-disable-next-line import/no-anonymous-default-export
 export default function (state = initialState, action) {
   switch (action.type) {
     case STORE_USER:
