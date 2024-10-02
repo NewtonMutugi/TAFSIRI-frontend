@@ -9,7 +9,7 @@ function SigninOidc() {
       try {
         await signinRedirectCallback();
       } catch (e) {
-        console.error(e);
+        console.log(e);
       }
       navigate('/');
     }
