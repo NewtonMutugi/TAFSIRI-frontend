@@ -6,7 +6,11 @@ function SigninOidc() {
   const navigate = useNavigate();
   useEffect(() => {
     async function signinAsync() {
-      await signinRedirectCallback();
+      try {
+        await signinRedirectCallback();
+      } catch (e) {
+        console.error(e);
+      }
       navigate('/');
     }
     signinAsync();
