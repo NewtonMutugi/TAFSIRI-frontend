@@ -1,105 +1,80 @@
 import { useSelector } from 'react-redux';
+import { Switch } from '@mui/material';
 import { signinRedirect, signoutRedirect } from '../../utils/UserManager';
 
-const DefaultHeader = () => {
-  // Tailwind CSS navbar for tafsiri
+const DefaultHeader = ({ toggleDarkMode, darkMode }) => {
   const user = useSelector((state) => state.auth.user);
 
   return (
-    <header className="bg-white">
-      <div className="mx-auto my-2 max-w-screen-xl px-4 ">
-        <div className="flex justify-between">
-          <div className="justify-items-start  px-2 md:flex md:items-center md:gap-12">
-            <a className=" text-blue-950" href="/">
-              {/* Tafsiri logo svg */}
-              <div className="text-4xl">TAFSIRI</div>
-            </a>
-          </div>
+    <header className="bg-white dark:bg-gray-900 bg-opacity-90 dark:bg-opacity-90 sticky top-0 z-50 backdrop-blur-sm">
+      <div className="mx-auto my-2 max-w-screen-xl px-4">
+        <div className="flex justify-between items-center ">
+          {/* Logo */}
+          <a href="/" className="text-4xl text-blue-950 dark:text-white">
+            TAFSIRI
+          </a>
 
-          {/* Hidden navigation links */}
-          {user ? (
-            <div className="hidden flex-col justify-center sm:flex sm:gap-4">
-              <nav aria-label="Global">
-                <ul className="flex items-center gap-6 text-sm">
-                  <li>
-                    <a
-                      className="text-gray-500 transition hover:text-gray-500/75"
-                      href="/"
-                    >
-                      {' '}
-                      Home{' '}
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      className="text-gray-500 transition hover:text-gray-500/75"
-                      href="/tafsiri"
-                    >
-                      {' '}
-                      Go to application{' '}
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      className="text-gray-500 transition hover:text-gray-500/75"
-                      href="/tafsiri"
-                    >
-                      {' '}
-                      Confgure application{' '}
-                    </a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-          ) : null}
+          {/* Navigation Links */}
+          {user && (
+            <nav aria-label="Global" className="hidden sm:flex sm:gap-4">
+              <ul className="flex items-center gap-6 text-sm">
+                <li>
+                  <a className="text-gray-500 dark:text-gray-300" href="/">
+                    Home
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className="text-gray-500 dark:text-gray-300"
+                    href="/tafsiri"
+                  >
+                    Go to application
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className="text-gray-500 dark:text-gray-300"
+                    href="/config"
+                  >
+                    Configure application
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          )}
 
-          <div className="flex flex-row justify-items-end gap-4">
+          {/* Dark Mode Toggle */}
+          <div className="flex items-center space-x-4">
+            <Switch
+              checked={darkMode}
+              onChange={toggleDarkMode}
+              color="default"
+            />
+            <span className="text-gray-500 dark:text-white">
+              {darkMode ? 'Dark Mode' : 'Light Mode'}
+            </span>
+
+            {/* User Info / Login-Logout */}
             {user ? (
-              <div className="flex flex-col justify-center sm:flex sm:pl-35 sm:gap-4">
-                <div className="text-sm  text-gray-500 ">
-                  Hello, {user.profile.FullName}
-                </div>
-              </div>
-            ) : null}
-            {user ? (
-              <div className="sm:flex sm:gap-4 cursor-pointer">
-                <div
-                  className="rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white shadow"
-                  onClick={() => signoutRedirect()}
+              <>
+                <span className="text-sm text-gray-500 dark:text-white">
+                  Hi👋, {user.profile.FullName}
+                </span>
+                <button
+                  className="bg-teal-600 text-white px-5 py-2 rounded"
+                  onClick={signoutRedirect}
                 >
                   Logout
-                </div>
-              </div>
+                </button>
+              </>
             ) : (
-              <div className="sm:flex sm:gap-4 cursor-pointer">
-                <div
-                  className="rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white shadow"
-                  onClick={() => signinRedirect()}
-                >
-                  Login
-                </div>
-              </div>
-            )}
-
-            {/* Hamburger menu for smaller devices*/}
-            <div className="block md:hidden">
-              <button className="rounded bg-gray-100 p-2 text-gray-600 transition hover:text-gray-600/75">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="size-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
+              <button
+                className="bg-teal-600 text-white px-5 py-2 rounded"
+                onClick={signinRedirect}
+              >
+                Login
               </button>
-            </div>
+            )}
           </div>
         </div>
       </div>

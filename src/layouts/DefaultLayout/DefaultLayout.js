@@ -1,40 +1,36 @@
-import { CBreadcrumb as AppBreadcrumb } from '@coreui/react';
-import routes from '../../routes';
+import React, { Suspense } from 'react';
 import { Container } from 'reactstrap';
-import { Route, Routes } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import ProtectedRoute from '../../utils/protectedRoute';
-import { lazy } from 'react';
+import routes from '../../routes';
+import Loader from '../../components/Loader';
 
-const DefaultHeader = lazy(() => import('./DefaultHeader'));
+const DefaultHeader = React.lazy(() => import('./DefaultHeader'));
 
-const DefaultLayout = () => {
+const DefaultLayout = ({ toggleDarkMode, darkMode }) => {
   return (
     <div className="app">
-      <DefaultHeader />
+      <Suspense fallback={<Loader />}>
+        <DefaultHeader toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
+      </Suspense>
       <div className="app-body">
-        <AppBreadcrumb approutes={routes} />
         <Container fluid>
           <Routes>
             {routes.map((route) => {
               if (!route.element) return null;
-
-              if (route.private) {
-                return (
-                  <Route
-                    key={route.name}
-                    path={route.path}
-                    element={<ProtectedRoute>{route.element}</ProtectedRoute>}
-                  />
-                );
-              } else {
-                return (
-                  <Route
-                    key={route.name}
-                    path={route.path}
-                    element={route.element}
-                  />
-                );
-              }
+              return route.private ? (
+                <Route
+                  key={route.name}
+                  path={route.path}
+                  element={<ProtectedRoute>{route.element}</ProtectedRoute>}
+                />
+              ) : (
+                <Route
+                  key={route.name}
+                  path={route.path}
+                  element={route.element}
+                />
+              );
             })}
           </Routes>
         </Container>

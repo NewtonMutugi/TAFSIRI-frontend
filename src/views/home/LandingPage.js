@@ -47,7 +47,7 @@ const LandingPage = () => {
       </Container>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-gray-800">
+      <section id="features" className="py-20 bg-gray-900">
         <Container maxWidth="lg">
           <motion.div
             className="text-center space-y-10"
@@ -98,7 +98,7 @@ const LandingPage = () => {
 
 const Feature = ({ title, description }) => (
   <motion.div
-    className="bg-gray-700 p-8 rounded-lg shadow-lg"
+    className="bg-gray-200 p-8 rounded-lg shadow-lg"
     initial={{ opacity: 0, scale: 0.8 }}
     whileInView={{ opacity: 1, scale: 1 }}
     transition={{ duration: 0.5 }}
