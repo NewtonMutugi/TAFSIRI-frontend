@@ -2,11 +2,13 @@
 import { useNavigate } from 'react-router-dom';
 import { signinRedirect, signoutRedirect } from '../../utils/UserManager'; // Ensure the path is correct
 import { useSelector } from 'react-redux';
+import DocumentTitle from '../../utils/DocumentTitles';
 
 const HomePage = () => {
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
 
+  DocumentTitle('Home');
   return (
     <div>
       <h1>Home Page</h1>

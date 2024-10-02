@@ -27,6 +27,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { materialLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import userManager from '../../utils/UserManager';
+import DocumentTitle from '../../utils/DocumentTitles';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const SUPERSET_URL = process.env.REACT_APP_SUPERSET_URL;
@@ -34,6 +35,7 @@ const SUPERSET_USERNAME = process.env.REACT_APP_SUPERSET_USERNAME;
 const SUPERSET_PASSWORD = process.env.REACT_APP_SUPERSET_PASSWORD;
 
 const Tafsiri = () => {
+  DocumentTitle('My Tafsiri');
   const [query, setQuery] = useState('');
   const [sqlQuery, setSqlQuery] = useState('');
   const [data, setData] = useState([]);
