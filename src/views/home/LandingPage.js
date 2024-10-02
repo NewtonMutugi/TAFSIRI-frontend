@@ -1,8 +1,10 @@
-import React from 'react';
 import { Button, Container, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
+import { useSelector } from 'react-redux';
 
 const LandingPage = () => {
+  const user = useSelector((state) => state.auth.user);
+
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col">
       {/* Hero Section */}
@@ -28,7 +30,7 @@ const LandingPage = () => {
               variant="contained"
               color="primary"
               className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-full "
-              href="#features"
+              href={user ? '/tafsiri' : '/login'}
             >
               Get Started
             </Button>

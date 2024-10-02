@@ -8,6 +8,7 @@ import { store } from './store';
 import { loadUserFromStorage } from './utils/UserManager';
 import { getTheme } from './utils/theme';
 import { ThemeProvider, CssBaseline } from '@mui/material';
+import Login from './views/login/login';
 
 const SigninOidc = lazy(() => import('./views/login/signin-oidc'));
 const SignoutOidc = lazy(() => import('./views/login/signout-oidc'));
@@ -55,6 +56,7 @@ const App = () => {
           <Routes>
             <Route path="/signout-oidc" element={<SignoutOidc />} />
             <Route path="/signin-oidc" element={<SigninOidc />} />
+            <Route path="/login" element={<Login />} />
             <Route
               path="/*"
               element={
