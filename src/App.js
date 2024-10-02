@@ -3,7 +3,7 @@ import AuthProvider from './utils/AuthProvider';
 import userManager from './utils/UserManager'; // Removed loadUserFromStorage
 import { useEffect, Suspense, lazy } from 'react';
 import Loader from './components/Loader';
-import DefaultLayout from './layouts/DefaultLayout/DefaultLayout';
+import DefaultLayout from './layouts/DefaultLayout';
 import { store } from './store';
 import { loadUserFromStorage } from './utils/UserManager';
 
