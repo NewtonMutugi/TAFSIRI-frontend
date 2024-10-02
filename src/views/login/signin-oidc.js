@@ -1,21 +1,19 @@
-import { useEffect } from 'react';
+// SigninOidc.js
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signinRedirectCallback } from '../../utils/UserManager';
+import { useDispatch } from 'react-redux';
+import { storeUser } from '../../utils/AuthActions';
 
 function SigninOidc() {
-  const navigate = useNavigate();
+  const history = useNavigate();
   useEffect(() => {
     async function signinAsync() {
-      try {
-        await signinRedirectCallback();
-        navigate('/', { replace: true });
-      } catch (e) {
-        console.error(`Error during signin redirect callback: ${e}`);
-        // Handle error appropriately, e.g., show an error message to the user
-      }
+      await signinRedirectCallback();
+      history('/');
     }
     signinAsync();
-  }, [navigate]);
+  }, [history]);
 
   return <div>Redirecting...</div>;
 }

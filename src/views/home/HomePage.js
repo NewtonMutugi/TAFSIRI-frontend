@@ -1,5 +1,9 @@
-import userManager from '../../utils/UserManager'; // Ensure the path is correct
-import React, { useState, useEffect } from 'react';
+// HomePage.js
+import userManager, {
+  signinRedirect,
+  signoutRedirect,
+} from '../../utils/UserManager'; // Ensure the path is correct
+import React from 'react';
 import { useSelector } from 'react-redux';
 
 const HomePage = () => {
@@ -8,14 +12,13 @@ const HomePage = () => {
   return (
     <div>
       <h1>Home Page</h1>
-      <p>Current User is {user}</p>
-      {/* // login button */}
+      <p>Current User is {user ? user.name : 'Not Logged In'}</p>
 
-      <button onClick={() => userManager.signinRedirect()}>Login</button>
+      {/* Login Button */}
+      <button onClick={() => signinRedirect()}>Login</button>
 
-      <button onClick={() => userManager.signoutRedirect()}>Logout</button>
-
-      {/* // logout button */}
+      {/* Logout Button */}
+      <button onClick={() => signoutRedirect()}>Logout</button>
     </div>
   );
 };

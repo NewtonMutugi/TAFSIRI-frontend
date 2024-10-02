@@ -1,19 +1,24 @@
-import { Navigate, useLocation } from 'react-router-dom';
+// ProtectedRoute.js
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { signinRedirect } from '../utils/UserManager';
+import { useNavigate } from 'react-router-dom';
+import { signinRedirect } from './UserManager';
 
-function ProtectedRoute({ element: Component, ...rest }) {
+function ProtectedRoute({ children }) {
   const user = useSelector((state) => state.auth.user);
-  const location = useLocation();
+  const navigate = useNavigate();
 
-  if (user) {
-    return <Component {...rest} />;
-  } else {
-    setTimeout(() => {
+  useEffect(() => {
+    if (!user) {
       signinRedirect();
-    }, 2000);
-    return <Navigate to="/signin-oidc" state={{ from: location }} />;
+    }
+  }, [user, navigate]);
+
+  if (!user) {
+    return <div>Redirecting...</div>;
   }
+
+  return children;
 }
 
 export default ProtectedRoute;
