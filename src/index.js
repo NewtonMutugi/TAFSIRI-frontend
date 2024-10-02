@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import { store, persistor } from './store';
 import { PersistGate } from 'redux-persist/integration/react';
 import Loader from './components/Loader';
-
+import { BrowserRouter as Router } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import { CookiesProvider } from 'react-cookie';
 
@@ -18,7 +18,6 @@ if (window.location.href.includes('#/signin-oidc#')) {
   // const cleanUrl = window.location.href.split('#')[0];
   // // window.history.replaceState({}, document.title, cleanUrl);
   // console.log('Cleaned URL:', cleanUrl);
-
 }
 
 root.render(
@@ -27,7 +26,9 @@ root.render(
       <PersistGate loading={<Loader />} persistor={persistor}>
         <RecoilRoot>
           <CookiesProvider>
-            <App />
+            <Router>
+              <App />
+            </Router>
           </CookiesProvider>
         </RecoilRoot>
       </PersistGate>
