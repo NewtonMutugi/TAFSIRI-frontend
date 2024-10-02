@@ -3,10 +3,12 @@ import routes from '../../routes';
 import { Container } from 'reactstrap';
 import { Route, Routes } from 'react-router-dom';
 import ProtectedRoute from '../../utils/protectedRoute';
+import DefaultHeader from './DefaultHeader';
 
 const DefaultLayout = () => {
   return (
     <div className="app">
+      <DefaultHeader />
       <div className="app-body">
         <AppBreadcrumb approutes={routes} />
         <Container fluid>
