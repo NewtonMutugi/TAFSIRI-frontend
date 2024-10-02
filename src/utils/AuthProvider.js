@@ -2,11 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { setAuthHeader } from './axiosHeaders';
 import { storeUser } from './AuthActions';
 
-export default function AuthProvider({
-  userManager: manager,
-  store,
-  children,
-}) {
+function AuthProvider({ userManager: manager, store, children }) {
   let userManager = useRef();
 
   useEffect(() => {
@@ -53,3 +49,5 @@ export default function AuthProvider({
 
   return React.Children.only(children);
 }
+
+export default AuthProvider;
