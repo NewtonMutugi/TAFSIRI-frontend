@@ -313,21 +313,24 @@ const Tafsiri = () => {
               <SyntaxHighlighter language="sql" style={materialLight}>
                 {sqlQuery || 'SQL query will be shown here.'}
               </SyntaxHighlighter>
+
               <Tooltip title={copied ? 'Copied!' : 'Copy'}>
-                <IconButton
-                  onClick={handleCopy}
-                  size="small"
-                  sx={{
-                    position: 'absolute',
-                    top: 8,
-                    right: 8,
-                    bgcolor: 'white',
-                    boxShadow: 1,
-                  }}
-                  disabled={!sqlQuery}
-                >
-                  <FileCopyIcon fontSize="small" />
-                </IconButton>
+                <span>
+                  <IconButton
+                    onClick={handleCopy}
+                    size="small"
+                    sx={{
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      bgcolor: 'white',
+                      boxShadow: 1,
+                    }}
+                    disabled={!sqlQuery}
+                  >
+                    <FileCopyIcon fontSize="small" />
+                  </IconButton>
+                </span>
               </Tooltip>
             </Box>
 
