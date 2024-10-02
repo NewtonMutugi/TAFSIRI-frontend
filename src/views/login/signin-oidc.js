@@ -3,14 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { signinRedirectCallback } from '../../utils/UserManager';
 
 function SigninOidc() {
-  const history = useNavigate();
+  const navigate = useNavigate();
   useEffect(() => {
     async function signinAsync() {
       await signinRedirectCallback();
-      history('/');
+      navigate('/');
     }
     signinAsync();
-  }, [history]);
+  }, [navigate]);
 
   return <div>Redirecting...</div>;
 }
