@@ -4,8 +4,11 @@ module.exports = {
   darkMode: 'class',
   theme: {
     colors: {
-      primary: '#1976d2', // Primary color
-      darkPrimary: '#90caf9', // Dark mode primary color
+      primary: '#1976d2',
+      darkPrimary: '#90caf9',
+      customDarkGray: '#282828',
+      darkNavbar: '#303134',
+      darkBody: '#1f1f1f',
     },
     fontFamily: {
       sans: ['Graphik', 'sans-serif'],
