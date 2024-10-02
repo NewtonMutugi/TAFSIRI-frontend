@@ -1,18 +1,15 @@
 // HomePage.js
-import userManager, {
-  signinRedirect,
-  signoutRedirect,
-} from '../../utils/UserManager'; // Ensure the path is correct
-import React from 'react';
+import { signinRedirect, signoutRedirect } from '../../utils/UserManager'; // Ensure the path is correct
 import { useSelector } from 'react-redux';
 
 const HomePage = () => {
   const user = useSelector((state) => state.auth.user);
+  console.log(user.profile.FullName);
 
   return (
     <div>
       <h1>Home Page</h1>
-      <p>Current User is {user ? user.name : 'Not Logged In'}</p>
+      <p>Current User is {user ? user.profile.FullName : 'Not Logged In'}</p>
 
       {/* Login Button */}
       <button onClick={() => signinRedirect()}>Login</button>

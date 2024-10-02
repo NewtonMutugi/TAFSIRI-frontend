@@ -1,6 +1,4 @@
-// App.js
 import { Routes, Route } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import AuthProvider from './utils/AuthProvider';
 import userManager from './utils/UserManager'; // Removed loadUserFromStorage
 import { useEffect, Suspense, lazy } from 'react';
