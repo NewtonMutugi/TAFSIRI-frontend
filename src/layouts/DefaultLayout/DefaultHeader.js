@@ -9,7 +9,7 @@ const DefaultHeader = () => {
     <header className="bg-white">
       <div className="mx-auto my-2 max-w-screen-xl px-4 ">
         <div className="flex justify-between">
-          <div className="justify-items-start  md:flex md:items-center md:gap-12">
+          <div className="justify-items-start  px-2 md:flex md:items-center md:gap-12">
             <a className=" text-blue-950" href="/">
               {/* Tafsiri logo svg */}
               <div className="text-4xl">TAFSIRI</div>
@@ -17,26 +17,46 @@ const DefaultHeader = () => {
           </div>
 
           {/* Hidden navigation links */}
-          {/* <div className="hidden md:block">
-            <nav aria-label="Global">
-              <ul className="flex items-center gap-6 text-sm">
-                <li>
-                  <a
-                    className="text-gray-500 transition hover:text-gray-500/75"
-                    href="/"
-                  >
-                    {' '}
-                    About{' '}
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div> */}
+          {user ? (
+            <div className="hidden flex-col justify-center sm:flex sm:gap-4">
+              <nav aria-label="Global">
+                <ul className="flex items-center gap-6 text-sm">
+                  <li>
+                    <a
+                      className="text-gray-500 transition hover:text-gray-500/75"
+                      href="/"
+                    >
+                      {' '}
+                      Home{' '}
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      className="text-gray-500 transition hover:text-gray-500/75"
+                      href="/tafsiri"
+                    >
+                      {' '}
+                      Go to application{' '}
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      className="text-gray-500 transition hover:text-gray-500/75"
+                      href="/tafsiri"
+                    >
+                      {' '}
+                      Confgure application{' '}
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          ) : null}
 
           <div className="flex flex-row justify-items-end gap-4">
             {user ? (
-              <div className="flex flex-col justify-center sm:flex sm:gap-4">
-                <div className="text-sm  text-gray-500">
+              <div className="flex flex-col justify-center sm:flex sm:pl-35 sm:gap-4">
+                <div className="text-sm  text-gray-500 ">
                   Hello, {user.profile.FullName}
                 </div>
               </div>
@@ -62,7 +82,7 @@ const DefaultHeader = () => {
             )}
 
             {/* Hamburger menu for smaller devices*/}
-            {/* <div className="block md:hidden">
+            <div className="block md:hidden">
               <button className="rounded bg-gray-100 p-2 text-gray-600 transition hover:text-gray-600/75">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +99,7 @@ const DefaultHeader = () => {
                   />
                 </svg>
               </button>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>

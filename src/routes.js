@@ -5,7 +5,7 @@ import withTracker from './withTracker';
 
 // Wrap the lazy-loaded components with Loadable and withTracker
 const HomePage = withTracker(
-  Loadable(lazy(() => import('./views/home/HomePage')))
+  Loadable(lazy(() => import('./views/home/LandingPage')))
 );
 const Tafsiri = withTracker(
   Loadable(lazy(() => import('./views/tafsiri/Tafsiri')))
