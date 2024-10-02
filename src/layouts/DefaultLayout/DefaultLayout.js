@@ -3,7 +3,9 @@ import routes from '../../routes';
 import { Container } from 'reactstrap';
 import { Route, Routes } from 'react-router-dom';
 import ProtectedRoute from '../../utils/protectedRoute';
-import DefaultHeader from './DefaultHeader';
+import { lazy } from 'react';
+
+const DefaultHeader = lazy(() => import('./DefaultHeader'));
 
 const DefaultLayout = () => {
   return (
