@@ -1,24 +1,28 @@
+// routes.js
 import Loadable from './components/Loadable';
 import { lazy } from 'react';
 import withTracker from './withTracker';
 
-const HomePage = Loadable(lazy(() => import('./views/home/HomePage')));
-const Tafsiri = Loadable(lazy(() => import('./views/tafsiri/Tafsiri')));
+// Wrap the lazy-loaded components with Loadable and withTracker
+const HomePage = withTracker(
+  Loadable(lazy(() => import('./views/home/HomePage')))
+);
+const Tafsiri = withTracker(
+  Loadable(lazy(() => import('./views/tafsiri/Tafsiri')))
+);
 
 const routes = [
   {
     path: '/',
-    exact: true,
     name: 'Home',
-    element: withTracker(HomePage),
+    element: <HomePage />, // React element
     private: false,
   },
   {
     path: '/tafsiri',
-    exact: true,
     name: 'TAFSIRI',
+    element: <Tafsiri />, // React element
     private: true,
-    element: withTracker(Tafsiri),
   },
 ];
 

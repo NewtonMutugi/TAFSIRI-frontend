@@ -1,34 +1,38 @@
+// DefaultLayout.js
 import { CBreadcrumb as AppBreadcrumb } from '@coreui/react';
 import routes from '../../routes';
-import * as router from 'react-router-dom';
 import { Container } from 'reactstrap';
 import { Route, Routes } from 'react-router-dom';
-import ProtectedRoute from '../../utils/protectedRoute';
+import ProtectedRoute from '../../utils/protectedRoute'; // Ensure correct casing and path
 
 const DefaultLayout = () => {
   return (
     <div className="app">
       <div className="app-body">
-        <AppBreadcrumb approutes={routes} router={router} />
+        {/* Ensure AppBreadcrumb is correctly receiving the routes */}
+        <AppBreadcrumb approutes={routes} />
         <Container fluid>
           <Routes>
-            {routes.map((route, idx) => {
-              console.log(route);
-              return route.element ? (
-                route.private ? (
+            {routes.map((route) => {
+              if (!route.element) return null;
+
+              if (route.private) {
+                return (
                   <Route
-                    key={idx}
+                    key={route.name} // Use a unique key instead of index
                     path={route.path}
-                    element={<ProtectedRoute element={route.element} />}
+                    element={<ProtectedRoute>{route.element}</ProtectedRoute>}
                   />
-                ) : (
+                );
+              } else {
+                return (
                   <Route
-                    key={idx}
+                    key={route.name} // Use a unique key instead of index
                     path={route.path}
-                    element={<route.element />}
+                    element={route.element}
                   />
-                )
-              ) : null;
+                );
+              }
             })}
           </Routes>
         </Container>

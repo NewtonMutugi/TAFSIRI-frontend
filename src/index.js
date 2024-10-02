@@ -13,6 +13,14 @@ import { CookiesProvider } from 'react-cookie';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
+// Clean up URL on initial load
+if (window.location.href.includes('#/signin-oidc#')) {
+  // const cleanUrl = window.location.href.split('#')[0];
+  // // window.history.replaceState({}, document.title, cleanUrl);
+  // console.log('Cleaned URL:', cleanUrl);
+
+}
+
 root.render(
   <React.StrictMode>
     <Provider store={store}>

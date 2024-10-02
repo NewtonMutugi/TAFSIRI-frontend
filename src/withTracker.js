@@ -1,3 +1,4 @@
+// withTracker.js
 import { useEffect } from 'react';
 import ReactGA from 'react-ga4';
 import { GA_TRACKING_ID } from './constants';
