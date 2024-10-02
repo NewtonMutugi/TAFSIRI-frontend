@@ -4,18 +4,17 @@ import { useSelector } from 'react-redux';
 
 const HomePage = () => {
   const user = useSelector((state) => state.auth.user);
-  console.log(user.profile.FullName);
 
   return (
     <div>
       <h1>Home Page</h1>
       <p>Current User is {user ? user.profile.FullName : 'Not Logged In'}</p>
 
-      {/* Login Button */}
-      <button onClick={() => signinRedirect()}>Login</button>
-
-      {/* Logout Button */}
-      <button onClick={() => signoutRedirect()}>Logout</button>
+      {user ? (
+        <button onClick={() => signoutRedirect()}>Logout</button>
+      ) : (
+        <button onClick={() => signinRedirect()}>Login</button>
+      )}
     </div>
   );
 };
