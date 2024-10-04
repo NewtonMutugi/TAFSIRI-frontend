@@ -1,6 +1,8 @@
 import { useSelector } from 'react-redux';
 import { Switch } from '@mui/material';
 import { signinRedirect, signoutRedirect } from '../../utils/UserManager';
+import { ReactComponent as DarkMode } from '../../assets/night.svg';
+import { ReactComponent as LightMode } from '../../assets/sun.svg';
 
 const DefaultHeader = ({ toggleDarkMode, darkMode }) => {
   const user = useSelector((state) => state.auth.user);
@@ -51,7 +53,11 @@ const DefaultHeader = ({ toggleDarkMode, darkMode }) => {
               color="default"
             />
             <span className="text-gray-500 dark:text-white">
-              {darkMode ? 'Dark Mode' : 'Light Mode'}
+              {darkMode ? (
+                <DarkMode className="h-6 w-6" />
+              ) : (
+                <LightMode className="h-6 w-6" />
+              )}
             </span>
 
             {/* User Info / Login-Logout */}
