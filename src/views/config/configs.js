@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Grid, Typography, Paper, useTheme } from '@mui/material';
+import { Box,  Grid, Paper, useTheme } from '@mui/material';
 import ConfigsList from './ConfigsList';
+import ConfigHeader from './ConfigHeader';
 
 const Configs = () => {
   const navigate = useNavigate();
-  const theme = useTheme(); // Material-UI theme
+  const theme = useTheme();
 
   const handleNewConnectionClick = () => {
     navigate('/config/add');
@@ -24,40 +25,7 @@ const Configs = () => {
         maxWidth="1200px"
       >
         {/* Title and Button */}
-        <Grid item xs={12}>
-          <Grid container alignItems="center" justifyContent="space-between">
-            <Grid item>
-              <Typography
-                variant="h4"
-                sx={{ fontWeight: 'bold', color: theme.palette.text.primary }}
-              >
-                Tafsiri Configurations
-              </Typography>
-              <Typography variant="body2" color={theme.palette.text.secondary}>
-                Manage and add new configurations for Tafsiri.
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Button
-                size="medium"
-                variant="contained"
-                sx={{
-                  textTransform: 'capitalize',
-                  px: 3,
-                  py: 1,
-                  boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-                  borderRadius: '8px',
-                  backgroundColor: theme.palette.primary.main,
-                  color: theme.palette.primary.contrastText,
-                }}
-                onClick={handleNewConnectionClick}
-              >
-                Add Database Configuration
-              </Button>
-            </Grid>
-          </Grid>
-        </Grid>
-
+        <ConfigHeader handleNewConnectionClick={handleNewConnectionClick} />
         {/* Elevated Container for Configurations List */}
         <Grid item xs={12}>
           <Paper
