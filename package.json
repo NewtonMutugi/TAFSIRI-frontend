@@ -3,22 +3,30 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^5.5.1",
+    "@base2/pretty-print-object": "^1.0.2",
     "@coreui/react": "^5.4.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^6.1.1",
     "@mui/material": "^6.1.2",
     "@reduxjs/toolkit": "^2.2.7",
+    "@tanstack/react-query": "^5.59.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@toolpad/core": "^0.7.0",
     "axios": "^1.7.7",
     "flowbite-react": "^0.10.2",
     "framer-motion": "^11.9.0",
     "oidc-client": "^1.11.5",
+    "pretty-print": "^2.0.0",
     "react": "^18.3.1",
     "react-cookie": "^7.2.0",
+    "react-copy-to-clipboard": "^5.1.0",
+    "react-device-detect": "^2.2.3",
     "react-dom": "^18.3.1",
+    "react-element-to-jsx-string": "^15.0.0",
     "react-ga4": "^2.1.0",
     "react-loadable": "^5.5.0",
     "react-redux": "^9.1.2",
@@ -29,11 +37,12 @@
     "recoil": "^0.7.7",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^3.1.0",
+    "simplebar-react": "^3.2.6",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts --openssl-legacy-provider build",
+    "start": "cross-env GENERATE_SOURCEMAP=false react-scripts --openssl-legacy-provider start",
+    "build": "cross-env GENERATE_SOURCEMAP=false react-scripts --openssl-legacy-provider build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -60,6 +69,7 @@
     ]
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "tailwindcss": "^3.4.13"
   }
 }
