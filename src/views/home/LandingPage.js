@@ -1,8 +1,11 @@
 import { Button, Container, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useSelector } from 'react-redux';
+import DocumentTitle from '../../utils/DocumentTitles';
 
 const LandingPage = () => {
+  DocumentTitle('Home');
+  
   const user = useSelector((state) => state.auth.user);
 
   return (

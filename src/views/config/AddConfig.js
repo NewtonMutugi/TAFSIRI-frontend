@@ -14,11 +14,13 @@ import MainCard from '../../components/MainCard';
 import SaveConfig from './SaveConfig';
 import FinalStepPage from './FinalStepPage';
 import ConfigHeader from './ConfigHeader';
+import DocumentTitle from '../../utils/DocumentTitles';
 
 const steps = ['Connection Details', 'Save Configuration'];
 const titles = ['Connection Details', 'Save Configuration'];
 
 const AddConfigs = () => {
+  DocumentTitle('Add Config');
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set());
   const [connString, setConnString] = useState('');

@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { Box,  Grid, Paper, useTheme } from '@mui/material';
+import { Box, Grid, Paper, useTheme } from '@mui/material';
 import ConfigsList from './ConfigsList';
 import ConfigHeader from './ConfigHeader';
+import DocumentTitle from '../../utils/DocumentTitles';
 
 const Configs = () => {
+  DocumentTitle('All Configs');
   const navigate = useNavigate();
   const theme = useTheme();
 
