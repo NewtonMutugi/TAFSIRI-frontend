@@ -14,5 +14,10 @@ export const getTheme = (mode) =>
       text: {
         primary: mode === 'dark' ? '#ffffff' : '#000000',
       },
+      divider: '#bbbfd0',
+    },
+    customShadows: {
+      z1: '0px 1px 3px rgba(0, 0, 0, 0.2)',
+      // other shadow definitions
     },
   });

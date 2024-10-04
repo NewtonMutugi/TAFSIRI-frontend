@@ -10,6 +10,10 @@ const HomePage = withTracker(
 const Tafsiri = withTracker(
   Loadable(lazy(() => import('./views/tafsiri/Tafsiri')))
 );
+const ListConfigs = withTracker(
+  Loadable(lazy(() => import('./views/config/configs')))
+);
+const AddConfig = Loadable(lazy(() => import('./views/config/AddConfig')));
 
 const routes = [
   {
@@ -22,6 +26,18 @@ const routes = [
     path: '/tafsiri',
     name: 'TAFSIRI',
     element: <Tafsiri />, // React element
+    private: true,
+  },
+  {
+    path: '/config',
+    name: 'List Configs',
+    element: <ListConfigs />,
+    private: true,
+  },
+  {
+    path: '/config/add',
+    name: 'Add Config',
+    element: <AddConfig />,
     private: true,
   },
 ];

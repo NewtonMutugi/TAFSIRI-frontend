@@ -9,9 +9,11 @@ import { loadUserFromStorage } from './utils/UserManager';
 import { getTheme } from './utils/theme';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import Login from './views/login/login';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const SigninOidc = lazy(() => import('./views/login/signin-oidc'));
 const SignoutOidc = lazy(() => import('./views/login/signout-oidc'));
+const queryClient = new QueryClient();
 
 const App = () => {
   // Dark mode state
@@ -51,23 +53,25 @@ const App = () => {
   return (
     <AuthProvider userManager={userManager} store={store}>
       <Suspense fallback={<Loader />}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Routes>
-            <Route path="/signout-oidc" element={<SignoutOidc />} />
-            <Route path="/signin-oidc" element={<SigninOidc />} />
-            <Route path="/login" element={<Login />} />
-            <Route
-              path="/*"
-              element={
-                <DefaultLayout
-                  toggleDarkMode={toggleDarkMode}
-                  darkMode={darkMode}
-                />
-              }
-            />
-          </Routes>
-        </ThemeProvider>
+        <QueryClientProvider client={queryClient} contextSharing={true}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Routes>
+              <Route path="/signout-oidc" element={<SignoutOidc />} />
+              <Route path="/signin-oidc" element={<SigninOidc />} />
+              <Route path="/login" element={<Login />} />
+              <Route
+                path="/*"
+                element={
+                  <DefaultLayout
+                    toggleDarkMode={toggleDarkMode}
+                    darkMode={darkMode}
+                  />
+                }
+              />
+            </Routes>
+          </ThemeProvider>
+        </QueryClientProvider>
       </Suspense>
     </AuthProvider>
   );
