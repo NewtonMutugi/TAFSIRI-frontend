@@ -18,7 +18,6 @@ const DefaultLayout = ({ toggleDarkMode, darkMode }) => {
           <Routes>
             {routes.map((route) => {
               if (!route.element) return null;
-              console.log('route', route);
               return route.private ? (
                 <Route
                   key={route.name}
