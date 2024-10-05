@@ -14,12 +14,12 @@ const ConfigHeader = ({ handleNewConnectionClick }) => {
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
             <Typography
-              variant="h4"
-              sx={{ fontWeight: 'bold', color: theme.palette.text.primary }}
+              variant="h5"
+              sx={{ fontWeight: 'normal', color: theme.palette.text.primary }}
             >
               Tafsiri Configurations
             </Typography>
-            <Typography variant="body2" color={theme.palette.text.secondary}>
+            <Typography variant="body3" color={theme.palette.text.secondary}>
               Manage and add new configurations for Tafsiri.
             </Typography>
           </Grid>
