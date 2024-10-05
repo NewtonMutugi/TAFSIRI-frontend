@@ -100,7 +100,8 @@ const ConnectionDetails = ({ onNextStep }) => {
       // Call your API to test the connection
       try {
         const response = await fetch(
-          `${API_URL}/db_access/test_db_connection`,
+          `${API_URL}/config/test_db_connection`,
+          console.log(`API_URL ${{ API_URL }}/config/test_db_connection`),
           {
             method: 'POST',
             headers: {
