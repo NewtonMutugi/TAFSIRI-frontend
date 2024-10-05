@@ -316,9 +316,9 @@ const ConnectionDetails = ({ onNextStep }) => {
             >
               Test Connection
             </LoadingButton>
-            <Button variant="contained" color="primary" onClick={handleClick}>
+            {/* <Button variant="contained" color="primary" onClick={handleClick}>
               Save
-            </Button>
+            </Button> */}
             <Button type={'reset'} variant="contained" color="error">
               Cancel
             </Button>
