@@ -8,8 +8,10 @@ import {
   Stack,
   TextField,
   Typography,
+  Chip,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -20,6 +22,7 @@ const ConnectionDetails = ({ onNextStep }) => {
     password: '',
     database: '',
     db_type: '',
+    tables: [''],
   });
   const [alertType, setAlertType] = useState(null);
   const [alertMessage, setAlertMessage] = useState('');
@@ -30,13 +33,14 @@ const ConnectionDetails = ({ onNextStep }) => {
     password: false,
     database: false,
     db_type: false,
+    tables: false,
   });
+  const [tables, setTables] = useState([]);
 
   const handleValidation = () => {
     let valid = true;
     const newErrors = { ...formErrors };
 
-    // Check if any required fields are empty
     if (!formData.host_port.trim()) {
       newErrors.host_port = true;
       valid = false;
@@ -57,6 +61,15 @@ const ConnectionDetails = ({ onNextStep }) => {
       newErrors.db_type = true;
       valid = false;
     }
+    if (
+      !formData.tables.length ||
+      formData.tables.some((table) => !table.trim())
+    ) {
+      newErrors.tables = true;
+      valid = false;
+    } else {
+      newErrors.tables = false;
+    }
 
     setFormErrors(newErrors);
     return valid;
@@ -73,10 +86,10 @@ const ConnectionDetails = ({ onNextStep }) => {
     if (newValue) {
       setFormData((prevData) => ({ ...prevData, db_type: newValue.driver }));
     } else {
-      setFormData({
-        ...formData,
+      setFormData((prevData) => ({
+        ...prevData,
         db_type: '',
-      });
+      }));
     }
   };
 
@@ -92,24 +105,19 @@ const ConnectionDetails = ({ onNextStep }) => {
     if (handleValidation()) {
       setTestLoader(true);
       event.preventDefault();
-      // Construct the API request with the driver and form data
+
       const apiRequest = {
         ...formData,
       };
 
-      // Call your API to test the connection
       try {
-        const response = await fetch(
-          `${API_URL}/config/test_db_connection`,
-          console.log(`API_URL ${{ API_URL }}/config/test_db_connection`),
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(apiRequest),
-          }
-        );
+        const response = await fetch(`${API_URL}/config/test_db_connection`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(apiRequest),
+        });
         const responseData = await response.json();
         if (!response.ok) {
           setAlertType('error');
@@ -127,6 +135,20 @@ const ConnectionDetails = ({ onNextStep }) => {
         setTestLoader(false);
       }
     }
+  };
+  const handleAddTable = () => {
+    if (formData.tableName.trim()) {
+      setTables((prevTables) => [...prevTables, formData.tableName]);
+      setFormData((prevData) => ({ ...prevData, tableName: '' })); // Clear input
+    } else {
+      setFormErrors((prevErrors) => ({ ...prevErrors, tableName: true }));
+    }
+  };
+
+  const handleRemoveTable = (tableToRemove) => {
+    setTables((prevTables) =>
+      prevTables.filter((table) => table !== tableToRemove)
+    );
   };
 
   const images = [
@@ -181,131 +203,96 @@ const ConnectionDetails = ({ onNextStep }) => {
       disabled: true,
     },
   ];
+
   return (
     <Box>
-      {/* <Typography variant="h5" mb={2.5}>
-        Connection Details
-      </Typography> */}
-      <form autoComplete="of" onSubmit={handleClick}>
+      {/* Connection Details Form */}
+      <form autoComplete="off" onSubmit={handleClick}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Autocomplete
-              id="db-select"
-              fullWidth
-              options={images}
-              autoHighlight
-              size="small"
-              getOptionLabel={(option) => option.title}
-              getOptionDisabled={(option) => option?.disabled}
-              renderOption={({ key, ...props }, option) => (
-                <Box
-                  key={key}
-                  component="li"
-                  sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
-                  {...props}
-                >
-                  <img
-                    loading="lazy"
-                    width="20"
-                    src={option.url}
-                    srcSet={`${option.url} 2x`}
-                    alt=""
-                  />
-                  {option.title}
-                </Box>
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  placeholder="Choose a database service"
-                  label="Database Service"
-                  variant="outlined"
-                  inputProps={{
-                    ...params.inputProps,
-                    autoComplete: 'new-password',
-                  }}
-                  error={formErrors.db_type}
-                  helperText={
-                    formErrors.db_type ? 'Data source service is required' : ''
-                  }
-                />
-              )}
-              onChange={handleAutocompleteChange}
-            />
-          </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            {/*<Typography variant="subtitle1">Host & Port</Typography>*/}
+          {/* Database selection and connection fields */}
+          <Autocomplete
+            id="db-select"
+            options={images}
+            autoHighlight
+            size="small"
+            getOptionLabel={(option) => option.title}
+            onChange={handleAutocompleteChange}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Database Service"
+                variant="outlined"
+                error={formErrors.db_type}
+                helperText={
+                  formErrors.db_type && 'Data source service is required'
+                }
+              />
+            )}
+          />
+          <TextField
+            label="Host and Port"
+            name="host_port"
+            value={formData.host_port}
+            onChange={handleChange}
+            error={formErrors.host_port}
+            helperText={formErrors.host_port && 'Host and Port are required'}
+          />
+          <TextField
+            label="DB Username"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            error={formErrors.username}
+            helperText={formErrors.username && 'Username is required'}
+          />
+          <TextField
+            label="DB Password"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            error={formErrors.password}
+            helperText={formErrors.password && 'Password is required'}
+          />
+          <TextField
+            label="Database"
+            name="database"
+            value={formData.database}
+            onChange={handleChange}
+            error={formErrors.database}
+            helperText={formErrors.database && 'Database is required'}
+          />
+
+          {/* Table Name Input */}
+          <Stack direction="row" spacing={1} alignItems="center">
             <TextField
-              type="text"
-              name="host_port"
-              label="Host and Port"
-              variant="outlined"
-              value={`${formData.host_port}`}
+              label="Table Name"
+              name="tableName"
+              value={formData.tableName}
               onChange={handleChange}
-              required
-              error={formErrors.host_port}
-              helperText={
-                formErrors.host_port ? 'Host and Port is required' : ''
-              }
+              error={formErrors.tableName}
+              helperText={formErrors.tableName && 'Please enter a table name'}
             />
-            <Typography variant="body2" color="textSecondary">
-              Enter the host address and port
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            {/*<Typography variant="subtitle1">Username</Typography>*/}
-            <TextField
-              type="text"
-              name="username"
-              label="DB Username"
-              variant="outlined"
-              value={formData.username}
-              onChange={handleChange}
-              required
-              error={formErrors.username}
-              helperText={formErrors.username ? 'Username is required' : ''}
-            />
-            <Typography variant="body2" color="textSecondary">
-              Enter the username
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            {/*<Typography variant="subtitle1">Password</Typography>*/}
-            <TextField
-              type="password"
-              name="password"
-              label="DB Password"
-              variant="outlined"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              error={formErrors.password}
-              helperText={formErrors.password ? 'Password is required' : ''}
-            />
-            <Typography variant="body2" color="textSecondary">
-              Enter the password
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            {/*<Typography variant="subtitle1">Database</Typography>*/}
-            <TextField
-              type="text"
-              name="database"
-              label="Database"
-              variant="outlined"
-              value={formData.database}
-              onChange={handleChange}
-              required
-              error={formErrors.database}
-              helperText={formErrors.database ? 'Database is required' : ''}
-            />
-            <Typography variant="body2" color="textSecondary">
-              Enter the database name
-            </Typography>
+            <Button variant="contained" onClick={handleAddTable}>
+              Add Table
+            </Button>
+          </Stack>
+
+          {/* Display Added Tables as Chips */}
+          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+            {tables.map((table, index) => (
+              <Chip
+                key={index}
+                label={table}
+                onDelete={() => handleRemoveTable(table)}
+                deleteIcon={<DeleteIcon />}
+              />
+            ))}
           </Box>
         </Box>
+
+        {/* Connection Test and Form Actions */}
         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-          <Box sx={{ flex: '1 1 auto' }} />
           <Stack direction="row" spacing={2}>
             <LoadingButton
               loading={testLoader}
@@ -344,4 +331,5 @@ const ConnectionDetails = ({ onNextStep }) => {
     </Box>
   );
 };
+
 export default ConnectionDetails;
