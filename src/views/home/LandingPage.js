@@ -2,10 +2,13 @@ import { Button, Container, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useSelector } from 'react-redux';
 import DocumentTitle from '../../utils/DocumentTitles';
+import { ReactComponent as AiImage } from '../../assets/ai-platform.svg';
+import { ReactComponent as DataDict } from '../../assets/data-dict.svg';
+import { ReactComponent as Transparency } from '../../assets/transparency.svg';
 
 const LandingPage = () => {
   DocumentTitle('Home');
-  
+
   const user = useSelector((state) => state.auth.user);
 
   return (
@@ -28,25 +31,16 @@ const LandingPage = () => {
             Transform your questions into precise SQL queries powered by
             LlamaIndex and informed by data dictionaries.
           </Typography>
-          <div className="mt-6 ">
+          <div className="mt-6">
             <Button
               variant="contained"
               color="primary"
-              className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-full "
+              className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-full"
               href={user ? '/tafsiri' : '/login'}
             >
               Get Started
             </Button>
-            {/* Add space between buttons */}
             <span className="inline-block w-4"></span>
-            {/* <Button
-              variant="outlined"
-              color="secondary"
-              className="ml-4 border-white text-white hover:bg-white hover:text-gray-900 py-2 px-6 rounded-full"
-              href="#learn-more"
-            >
-              Learn More
-            </Button> */}
           </div>
         </motion.div>
       </Container>
@@ -67,26 +61,30 @@ const LandingPage = () => {
               <Feature
                 title="Natural Language Processing"
                 description="Convert questions into SQL queries effortlessly with advanced NLP integration."
+                Image={<AiImage className="h-24 w-24 mx-auto mb-4" />}
               />
               <Feature
                 title="Data Dictionary Powered"
                 description="Leverage data dictionaries for contextual accuracy when querying large databases."
+                Image={<DataDict className="h-24 w-24 mx-auto mb-4" />}
               />
               <Feature
                 title="Query Transparency"
                 description="Get both the SQL query and results, ensuring full transparency for users."
+                Image={<Transparency className="h-24 w-24 mx-auto mb-4" />}
               />
             </div>
           </motion.div>
         </Container>
       </section>
-
+      <span className="h-4"></span>
       {/* Call to Action */}
       <section className="py-10 bg-gray-900">
         <Container maxWidth="md" className="text-center">
           <Typography variant="h5" className="text-2xl font-bold text-white">
             Ready to transform your data experience?
           </Typography>
+          <span className="h-2"></span>
           <Button
             variant="contained"
             color="primary"
@@ -97,17 +95,25 @@ const LandingPage = () => {
           </Button>
         </Container>
       </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-800 py-6 text-center">
+        <Typography variant="body2" className="text-gray-300">
+          &copy; 2022 Tafsiri. All rights reserved.
+        </Typography>
+      </footer>
     </div>
   );
 };
 
-const Feature = ({ title, description }) => (
+const Feature = ({ title, description, Image }) => (
   <motion.div
     className="bg-gray-500 p-8 rounded-lg shadow-lg"
     initial={{ opacity: 0, scale: 0.8 }}
     whileInView={{ opacity: 1, scale: 1 }}
     transition={{ duration: 0.5 }}
   >
+    {Image}
     <Typography variant="h6" className="text-xl font-bold text-white">
       {title}
     </Typography>
