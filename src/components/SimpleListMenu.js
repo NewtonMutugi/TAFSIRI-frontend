@@ -1,21 +1,17 @@
-import * as React from 'react';
+import { useState } from 'react';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 
-const options = [
-  'Show some love to MUI',
-  'Show all notification content',
-  'Hide sensitive notification content',
-  'Hide all notification content',
-];
+const options = ['(.83) Reporting db', '(.66) Reporting db', 'Kenya EMR db'];
 
 export default function SimpleListMenu() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(1);
   const open = Boolean(anchorEl);
+
   const handleClickListItem = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -45,8 +41,21 @@ export default function SimpleListMenu() {
           onClick={handleClickListItem}
         >
           <ListItemText
-            primary="When device is locked"
-            secondary={options[selectedIndex]}
+            primary="Currently running config"
+            secondary={
+              <span style={{ display: 'flex', alignItems: 'center' }}>
+                <span
+                  style={{
+                    width: '10px',
+                    height: '10px',
+                    backgroundColor: 'limegreen',
+                    borderRadius: '50%',
+                    marginRight: '8px',
+                  }}
+                />
+                {options[selectedIndex]}
+              </span>
+            }
           />
         </ListItemButton>
       </List>
@@ -63,7 +72,6 @@ export default function SimpleListMenu() {
         {options.map((option, index) => (
           <MenuItem
             key={option}
-            disabled={index === 0}
             selected={index === selectedIndex}
             onClick={(event) => handleMenuItemClick(event, index)}
           >

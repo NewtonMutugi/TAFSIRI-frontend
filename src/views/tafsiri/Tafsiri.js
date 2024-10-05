@@ -28,6 +28,7 @@ import { materialLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import userManager from '../../utils/UserManager';
 import DocumentTitle from '../../utils/DocumentTitles';
+import SimpleListMenu from '../../components/SimpleListMenu';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const SUPERSET_URL = process.env.REACT_APP_SUPERSET_URL;
@@ -246,6 +247,11 @@ const Tafsiri = () => {
     >
       <Card sx={{ width: '100%', maxWidth: 800, p: 2 }}>
         <CardContent>
+          <div className="flex flex-row justify-between">
+            <SimpleListMenu className="justify-start" />
+            <span className="w-4" />
+          </div>
+
           <Stack spacing={3}>
             <Typography
               variant="h2"
