@@ -21,21 +21,19 @@ const App = () => {
   // Toggle dark mode
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
+    console.log('Dark mode:', darkMode);
     document.documentElement.classList.toggle('dark', !darkMode); // Tailwind dark mode
+    localStorage.setItem('darkMode', darkMode ? 'false' : 'true');
   };
 
   const theme = getTheme(darkMode ? 'dark' : 'light');
   useEffect(() => {
-    // Save mode preference in localStorage
-    const savedMode = localStorage.getItem('darkMode') === 'true';
-    setDarkMode(savedMode);
-    if (savedMode) document.documentElement.classList.add('dark');
+    const savedMode = localStorage.getItem('darkMode');
+    const isDarkMode = savedMode === 'true' ? true : false;
+    setDarkMode(isDarkMode);
+    document.documentElement.classList.toggle('dark', isDarkMode);
   }, []);
 
-  // Save mode preference in localStorage
-  useEffect(() => {
-    localStorage.setItem('darkMode', darkMode);
-  }, [darkMode]);
 
   // Check whether it is a sign in redirect
   useEffect(() => {
