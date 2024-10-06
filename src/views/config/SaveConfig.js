@@ -1,16 +1,25 @@
-// SaveConfig.js
-
 import { useState } from 'react';
-import { Alert, AlertTitle, Box, TextField, Typography } from '@mui/material';
+import {
+  Alert,
+  AlertTitle,
+  Box,
+  TextField,
+  Typography,
+  Button,
+} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import PropTypes from 'prop-types';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
-const SaveConfig = ({ config, onSuccess }) => {
+const SaveConfig = ({ config, onSuccess, handleBack }) => {
   const [formData, setFormData] = useState({
     config_name: config.config_name || '',
     example_prompt: config.example_prompt || '',
+  });
+  const [formErrors, setFormErrors] = useState({
+    config_name: false,
+    example_prompt: false,
   });
   const [loading, setLoading] = useState(false);
   const [alertType, setAlertType] = useState(null);
@@ -19,11 +28,18 @@ const SaveConfig = ({ config, onSuccess }) => {
   // Validate required fields
   const handleValidation = () => {
     let valid = true;
-    if (!formData.config_name.trim() || !formData.example_prompt.trim()) {
-      setAlertType('error');
-      setAlertMessage('Please fill in all required fields.');
+    const newErrors = { ...formErrors };
+
+    if (!formData.config_name.trim()) {
+      newErrors.config_name = true;
       valid = false;
     }
+    if (!formData.example_prompt.trim()) {
+      newErrors.example_prompt = true;
+      valid = false;
+    }
+
+    setFormErrors(newErrors);
     return valid;
   };
 
@@ -37,11 +53,11 @@ const SaveConfig = ({ config, onSuccess }) => {
 
     // Prepare the config data as per TafsiriConfigSchema
     const configData = {
+      ...config,
       config_name: formData.config_name,
       example_prompt: formData.example_prompt,
-      ...config,
     };
-
+    console.log('Config Data:', configData);
     try {
       const response = await fetch(`${API_URL}/config/new_config`, {
         method: 'POST',
@@ -76,10 +92,10 @@ const SaveConfig = ({ config, onSuccess }) => {
       ...prevData,
       [name]: value,
     }));
-    if (alertType) {
-      setAlertType(null);
-      setAlertMessage('');
-    }
+    setFormErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: false,
+    }));
   };
 
   return (
@@ -101,6 +117,7 @@ const SaveConfig = ({ config, onSuccess }) => {
           rows={4}
           variant="outlined"
           name={'example_prompt'}
+          error={formErrors.example_prompt}
           value={formData.example_prompt}
           onChange={handleChange}
           required
@@ -113,14 +130,37 @@ const SaveConfig = ({ config, onSuccess }) => {
           name={'config_name'}
           value={formData.config_name}
           onChange={handleChange}
+          error={formErrors.config_name}
           required
           fullWidth
           margin="normal"
         />
 
         {/* Form Actions */}
-        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            pt: 2,
+            justifyContent: 'space-between',
+          }}
+        >
           <Box sx={{ flex: '1 1 auto' }} />
+          <Button
+            variant="contained"
+            color="inherit"
+            // disabled={activeStep === 0}
+            onClick={handleBack}
+            sx={{
+              textTransform: 'capitalize',
+              px: 3,
+              py: 1,
+              borderRadius: '8px',
+              boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.05)',
+            }}
+          >
+            Back
+          </Button>
           <LoadingButton
             type="submit"
             variant="contained"
