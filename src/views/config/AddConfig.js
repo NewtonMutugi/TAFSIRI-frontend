@@ -1,3 +1,5 @@
+// AddConfigs.js
+
 import { useState } from 'react';
 import {
   Box,
@@ -24,22 +26,44 @@ const AddConfigs = () => {
   DocumentTitle('Add Config');
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set());
-  const [connString, setConnString] = useState('');
   const theme = useTheme();
 
+  // Initialize the configuration state
+  const [config, setConfig] = useState({
+    config_name: '',
+    tables: [],
+    db_type: '',
+    db_host: '',
+    db_port: 0,
+    db_user: '',
+    db_password: '',
+    db_name: '',
+    example_prompt: '',
+    om_host: '',
+    om_jwt: '',
+  });
+
+  // Navigate to the next step
   const handleNext = () => {
     let newSkipped = skipped;
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped(newSkipped);
   };
 
+  // Navigate to the previous step
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const onNextStep = (driver) => {
-    setConnString(driver);
+  // Update the config state with partial data from each step
+  const handleNextStep = (partialData) => {
+    setConfig((prevConfig) => ({ ...prevConfig, ...partialData }));
     handleNext();
+  };
+
+  // Finalize the configuration and navigate to the final step
+  const handleFinish = () => {
+    setActiveStep(steps.length);
   };
 
   return (
@@ -126,13 +150,19 @@ const AddConfigs = () => {
                   }
                 >
                   {activeStep === 0 && (
-                    <ConnectionDetails onNextStep={onNextStep} />
+                    <ConnectionDetails
+                      onNextStep={handleNextStep}
+                      config={config}
+                    />
                   )}
                   {activeStep === 1 && (
-                    <DataDictionary onNextStep={onNextStep} />
+                    <DataDictionary
+                      onNextStep={handleNextStep}
+                      config={config}
+                    />
                   )}
                   {activeStep === 2 && (
-                    <SaveConfig connString={connString} onFinish={handleNext} />
+                    <SaveConfig config={config} onSuccess={handleFinish} />
                   )}
                 </MainCard>
 

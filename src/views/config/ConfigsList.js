@@ -1,4 +1,5 @@
-import { useState } from 'react';
+// src/pages/config/ConfigsList.js
+import { useState, useEffect } from 'react';
 import {
   Box,
   IconButton,
@@ -12,17 +13,20 @@ import {
   TableRow,
   Tooltip,
   Typography,
+  CircularProgress,
+  Alert,
+  AlertTitle,
 } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-// import Dot from '../../components/@extended/Dot';
 import { BookOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import DeleteDialog from '../../components/Dialogs/DeleteDialog';
-import { useDeleteAccessConfig, useGetAccessConfigs } from '../../store';
+import axios from 'axios';
 
+// Define the table headers
 const headCells = [
   {
-    id: 'name',
+    id: 'config_name',
     align: 'left',
     disablePadding: true,
     label: 'Name',
@@ -53,170 +57,241 @@ const headCells = [
   },
 ];
 
+// Component to display the status
 const OrderStatus = ({ status }) => {
-  // let color;
   let title;
 
   switch (status) {
     case true:
-      // color = 'success';
       title = 'Active';
       break;
     case false:
-      // color = 'warning';
       title = 'Inactive';
       break;
     default:
-      // color = 'error';
       title = 'Unknown';
   }
 
   return (
     <Stack direction="row" spacing={1} alignItems="center">
-      {/* <Dot color={color} /> */}
       <Typography>{title}</Typography>
     </Stack>
   );
 };
 
 OrderStatus.propTypes = {
-  status: PropTypes.number,
+  status: PropTypes.bool,
 };
 
+// Main ConfigsList component
 const ConfigsList = () => {
-  const [selected] = useState([]);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [rowId, setRowId] = useState(null);
-  const navigate = useNavigate();
-  const deleteAccess = useDeleteAccessConfig();
-  const { isLoading, data: getAccessConfigsData } =
-    useGetAccessConfigs();
+  const [configs, setConfigs] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleDictListClick = (id) => {
-    navigate(`/dictionary/list/${id}`);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedConfigId, setSelectedConfigId] = useState(null);
+
+  const navigate = useNavigate();
+
+  const API_URL = process.env.REACT_APP_BACKEND_URL;
+
+  // Fetch configurations from the backend
+  const fetchConfigs = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(`${API_URL}/config/get_configs`);
+      setConfigs(response.data);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching configurations:', err);
+      setError(null);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleClickOpen = (id) => {
-    setRowId(id);
+  useEffect(() => {
+    fetchConfigs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Handle opening the delete confirmation dialog
+  const handleClickOpen = (configId) => {
+    setSelectedConfigId(configId);
     setDialogOpen(true);
   };
 
+  // Handle closing the delete confirmation dialog
   const handleClose = () => {
     setDialogOpen(false);
+    setSelectedConfigId(null);
   };
 
-  const handleDelete = () => {
-    console.log(rowId);
-    // Add your delete logic here
-    deleteAccess.mutate({ id: rowId });
-    console.log(deleteAccess.isSuccess);
-    handleClose();
+  // Handle deleting a configuration
+  const handleDelete = async () => {
+    if (!selectedConfigId) return;
+
+    try {
+      await axios.delete(`${API_URL}/delete_config/${selectedConfigId}`);
+      // Refresh the configurations list after deletion
+      fetchConfigs();
+      handleClose();
+    } catch (err) {
+      console.error('Error deleting configuration:', err);
+      alert('Failed to delete configuration. Please try again.');
+    }
   };
 
-  const isSelected = (trackingNo) => selected.indexOf(trackingNo) !== -1;
+  // Handle editing a configuration
+  const handleEdit = (configId) => {
+    navigate(`/config/edit/${configId}`);
+  };
+
+  // Handle navigating to the Data Dictionary
+  const handleDictListClick = (configId) => {
+    navigate(`/dictionary/list/${configId}`);
+  };
+
+  // Helper function to format the connection string for display
+  // const getDbType = (connString) => {
+  //   try {
+  //     return connString.split('://')[0];
+  //   } catch {
+  //     return 'Unknown';
+  //   }
+  // };
 
   return (
     <Box>
-      <TableContainer
-        sx={{
-          width: '100%',
-          overflowX: 'auto',
-          position: 'relative',
-          display: 'block',
-          maxWidth: '100%',
-          '& td, & th': { whiteSpace: 'nowrap' },
-        }}
-      >
-        <Table
-          aria-labelledby="tableTitle"
+      {/* Display loading spinner */}
+      {isLoading && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+          <CircularProgress />
+        </Box>
+      )}
+
+      {/* Display error message */}
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          <AlertTitle>Error</AlertTitle>
+          {error}
+        </Alert>
+      )}
+
+      {/* Display configurations table */}
+      {!isLoading && !error && (
+        <TableContainer
           sx={{
-            '& .MuiTableCell-root:first-of-type': {
-              pl: 2,
-            },
-            '& .MuiTableCell-root:last-of-type': {
-              pr: 3,
-            },
+            width: '100%',
+            overflowX: 'auto',
+            position: 'relative',
+            display: 'block',
+            maxWidth: '100%',
+            '& td, & th': { whiteSpace: 'nowrap' },
           }}
         >
-          <TableHead>
-            <TableRow>
-              {headCells.map((headCell) => (
-                <TableCell
-                  key={headCell.id}
-                  align={headCell.align}
-                  padding={headCell.disablePadding ? 'none' : 'normal'}
-                >
-                  {headCell.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {!isLoading &&
-              getAccessConfigsData?.map((row, index) => {
-                const isItemSelected = isSelected(row.name);
-                const labelId = `enhanced-table-checkbox-${index}`;
-
-                return (
+          <Table
+            aria-labelledby="tableTitle"
+            sx={{
+              '& .MuiTableCell-root:first-of-type': {
+                pl: 2,
+              },
+              '& .MuiTableCell-root:last-of-type': {
+                pr: 3,
+              },
+            }}
+          >
+            <TableHead>
+              <TableRow>
+                {headCells.map((headCell) => (
+                  <TableCell
+                    key={headCell.id}
+                    align={headCell.align}
+                    padding={headCell.disablePadding ? 'none' : 'normal'}
+                  >
+                    {headCell.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {configs.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} align="center">
+                    No configurations found.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                configs.map((config) => (
                   <TableRow
                     hover
-                    role="checkbox"
+                    key={config.id} // Assuming each config has a unique 'id' field
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.name}
-                    selected={isItemSelected}
                   >
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      align="left"
-                    >
-                      <Link color="secondary" component={RouterLink} to="">
-                        {row.name}
+                    <TableCell component="th" scope="row" align="left">
+                      <Link
+                        color="secondary"
+                        component={RouterLink}
+                        to={`/config/details/${config.id}`} // Optional: Navigate to config details
+                        underline="hover"
+                      >
+                        {config.config_name || 'Unnamed Config'}
                       </Link>
                     </TableCell>
                     <TableCell align="left">
-                      {row.conn_string.split('://')[0]}
+                      {config.db_type || 'N/A'}
                     </TableCell>
                     <TableCell align="left">
-                      <OrderStatus status={row.is_active} />
+                      <OrderStatus status={config.is_active} />
                     </TableCell>
                     <TableCell align="right">
-                      {new Date(row.updated_at).toLocaleDateString()}
+                      {config.updated_at
+                        ? new Date(config.updated_at).toLocaleDateString()
+                        : 'N/A'}
                     </TableCell>
                     <TableCell align="right">
-                      <Tooltip title={`Data Dictionary`}>
+                      {/* Data Dictionary Button */}
+                      <Tooltip title="Data Dictionary">
                         <IconButton
                           aria-label="Data Dictionary"
-                          onClick={() => handleDictListClick(row.id)}
+                          onClick={() => handleDictListClick(config.id)}
                         >
                           <BookOutlined />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip title={`Edit`}>
-                        <IconButton aria-label="Edit">
+
+                      {/* Edit Button */}
+                      <Tooltip title="Edit">
+                        <IconButton
+                          aria-label="Edit"
+                          onClick={() => handleEdit(config.id)}
+                        >
                           <EditOutlined />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip title={`Delete`}>
+
+                      {/* Delete Button */}
+                      <Tooltip title="Delete">
                         <IconButton
                           aria-label="Delete"
-                          onClick={() => handleClickOpen(row.id)}
+                          onClick={() => handleClickOpen(config.id)}
                         >
                           <DeleteOutlined />
                         </IconButton>
                       </Tooltip>
                     </TableCell>
                   </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+
+      {/* Delete Confirmation Dialog */}
       <DeleteDialog
-        text="Database Config"
+        text="Configuration"
         open={dialogOpen}
         handleClose={handleClose}
         handleDelete={handleDelete}
@@ -224,4 +299,5 @@ const ConfigsList = () => {
     </Box>
   );
 };
+
 export default ConfigsList;
