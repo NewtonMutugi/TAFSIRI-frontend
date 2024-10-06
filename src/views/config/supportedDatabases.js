@@ -7,7 +7,7 @@ const supportedDatabases = [
   },
   {
     url: '',
-    title: 'MSSQL',
+    title: 'Microsoft SQL Server',
     driver: 'mssql+pymssql',
   },
   {

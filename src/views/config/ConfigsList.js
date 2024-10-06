@@ -209,7 +209,9 @@ const ConfigsList = () => {
                       </Link>
                     </TableCell>
                     <TableCell align="left">
-                      {config.db_type || 'N/A'}
+                      {supportedDatabases.find(
+                        (db) => db.driver === config.db_type
+                      )?.title || 'N/A'}
                     </TableCell>
                     <TableCell align="left">
                       {config.db_host || 'Host not found'}
