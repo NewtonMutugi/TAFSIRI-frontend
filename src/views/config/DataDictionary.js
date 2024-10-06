@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import PropTypes from 'prop-types';
 
-const DataDictionary = ({ onNextStep, config }) => {
+const DataDictionary = ({ onNextStep, config, handleBack }) => {
   const [formData, setFormData] = useState({
     om_host: config.om_host || '',
     om_jwt: config.om_jwt || '',
@@ -109,8 +109,30 @@ const DataDictionary = ({ onNextStep, config }) => {
           margin="normal"
         />
         {/* Navigation Button */}
-        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            pt: 2,
+            justifyContent: 'space-between',
+          }}
+        >
           <Box sx={{ flex: '1 1 auto' }} />
+          <Button
+            variant="contained"
+            color="inherit"
+            // disabled={activeStep === 0}
+            onClick={handleBack}
+            sx={{
+              textTransform: 'capitalize',
+              px: 3,
+              py: 1,
+              borderRadius: '8px',
+              boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.05)',
+            }}
+          >
+            Back
+          </Button>
           <Button
             type="submit"
             variant="contained"
