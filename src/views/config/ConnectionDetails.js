@@ -14,6 +14,7 @@ import {
 import { LoadingButton } from '@mui/lab';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PropTypes from 'prop-types';
+import supportedDatabases from './supportedDatabases';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -188,60 +189,6 @@ const ConnectionDetails = ({ onNextStep, config }) => {
     );
   };
 
-  // Database type options with images and drivers
-  const images = [
-    {
-      url: '',
-      title: 'MySQL',
-      driver: 'mysql',
-    },
-    {
-      url: '',
-      title: 'MSSQL',
-      driver: 'mssql+pymssql',
-    },
-    {
-      url: '',
-      title: 'Postgres',
-      driver: 'postgresql',
-    },
-    {
-      url: '',
-      title: 'SQLite',
-      driver: 'sqlite',
-    },
-    {
-      url: '',
-      title: 'Mongo DB',
-      driver: 'mongo',
-      disabled: false,
-    },
-    {
-      url: '',
-      title: 'FHIR',
-      driver: 'fhir',
-      disabled: true,
-    },
-    {
-      url: '',
-      title: 'CSV',
-      driver: 'flatfile',
-      disabled: true,
-    },
-    {
-      url: '',
-      title: 'APIs/Web',
-      driver: 'api',
-      disabled: true,
-    },
-    {
-      url: '',
-      title: 'Snowflake',
-      driver: 'snow',
-      disabled: true,
-    },
-  ];
-
   return (
     <Box>
       {/* Connection Details Form */}
@@ -254,7 +201,7 @@ const ConnectionDetails = ({ onNextStep, config }) => {
           </Typography>
           <Autocomplete
             id="db-select"
-            options={images.filter((option) => !option.disabled)}
+            options={supportedDatabases.filter((option) => !option.disabled)}
             autoHighlight
             size="small"
             getOptionLabel={(option) => option.title}
