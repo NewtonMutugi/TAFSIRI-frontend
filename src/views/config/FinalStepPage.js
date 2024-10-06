@@ -11,17 +11,12 @@ const FinalStepPage = () => {
     navigate('/config');
   };
 
-  // Navigate to upload the data dictionary (if applicable)
-  const handleDictUpload = () => {
-    navigate('/config');
-  };
   return (
     <React.Fragment>
       <MainCard sx={{ mt: 2 }} content={true} title={`Done`}>
         <Typography sx={{ mt: 2, mb: 1 }}>
-          Database Configs Added - You&apos;re now finished
+          Database Configuration successfully added - You&apos;re now finished
         </Typography>
-        <Typography sx={{ mt: 2, mb: 1 }}>Next steps</Typography>
         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
           <Box sx={{ flex: '1 1 auto' }} />
           <Stack direction="row" spacing={2}>
@@ -31,13 +26,6 @@ const FinalStepPage = () => {
               onClick={handleFinish}
             >
               Finish
-            </Button>
-            <Button
-              variant={`contained`}
-              color={`info`}
-              onClick={handleDictUpload}
-            >
-              Upload Dictionary
             </Button>
           </Stack>
         </Box>
