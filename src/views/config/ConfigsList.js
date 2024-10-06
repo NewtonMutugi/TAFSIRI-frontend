@@ -1,4 +1,3 @@
-// src/pages/config/ConfigsList.js
 import { useState, useEffect } from 'react';
 import {
   Box,
@@ -19,7 +18,7 @@ import {
 } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { BookOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import DeleteDialog from '../../components/Dialogs/DeleteDialog';
 import axios from 'axios';
 
@@ -105,7 +104,7 @@ const ConfigsList = () => {
       setError(null);
     } catch (err) {
       console.error('Error fetching configurations:', err);
-      setError(null);
+      setError('Failed to fetch configurations.');
     } finally {
       setIsLoading(false);
     }
@@ -133,10 +132,11 @@ const ConfigsList = () => {
     if (!selectedConfigId) return;
 
     try {
-      await axios.delete(`${API_URL}/delete_config/${selectedConfigId}`);
+      await axios.delete(`${API_URL}/config/delete_config/${selectedConfigId}`);
       // Refresh the configurations list after deletion
       fetchConfigs();
       handleClose();
+      alert('Configuration deleted successfully.');
     } catch (err) {
       console.error('Error deleting configuration:', err);
       alert('Failed to delete configuration. Please try again.');
@@ -147,20 +147,6 @@ const ConfigsList = () => {
   const handleEdit = (configId) => {
     navigate(`/config/edit/${configId}`);
   };
-
-  // Handle navigating to the Data Dictionary
-  const handleDictListClick = (configId) => {
-    navigate(`/dictionary/list/${configId}`);
-  };
-
-  // Helper function to format the connection string for display
-  // const getDbType = (connString) => {
-  //   try {
-  //     return connString.split('://')[0];
-  //   } catch {
-  //     return 'Unknown';
-  //   }
-  // };
 
   return (
     <Box>
@@ -226,14 +212,14 @@ const ConfigsList = () => {
                 configs.map((config) => (
                   <TableRow
                     hover
-                    key={config.id} // Assuming each config has a unique 'id' field
+                    key={config._id} // Use _id instead of id
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell component="th" scope="row" align="left">
                       <Link
                         color="secondary"
                         component={RouterLink}
-                        to={`/config/details/${config.id}`} // Optional: Navigate to config details
+                        to={`/config/details/${config._id}`} // Use _id
                         underline="hover"
                       >
                         {config.config_name || 'Unnamed Config'}
@@ -251,21 +237,11 @@ const ConfigsList = () => {
                         : 'N/A'}
                     </TableCell>
                     <TableCell align="right">
-                      {/* Data Dictionary Button */}
-                      <Tooltip title="Data Dictionary">
-                        <IconButton
-                          aria-label="Data Dictionary"
-                          onClick={() => handleDictListClick(config.id)}
-                        >
-                          <BookOutlined />
-                        </IconButton>
-                      </Tooltip>
-
                       {/* Edit Button */}
                       <Tooltip title="Edit">
                         <IconButton
                           aria-label="Edit"
-                          onClick={() => handleEdit(config.id)}
+                          onClick={() => handleEdit(config._id)} // Use _id
                         >
                           <EditOutlined />
                         </IconButton>
@@ -275,7 +251,7 @@ const ConfigsList = () => {
                       <Tooltip title="Delete">
                         <IconButton
                           aria-label="Delete"
-                          onClick={() => handleClickOpen(config.id)}
+                          onClick={() => handleClickOpen(config._id)} // Use _id
                         >
                           <DeleteOutlined />
                         </IconButton>
