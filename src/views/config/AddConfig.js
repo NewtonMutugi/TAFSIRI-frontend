@@ -1,9 +1,6 @@
-// AddConfigs.js
-
 import { useState } from 'react';
 import {
   Box,
-  Button,
   Stepper,
   Step,
   StepLabel,
@@ -158,69 +155,18 @@ const AddConfigs = () => {
                   {activeStep === 1 && (
                     <DataDictionary
                       onNextStep={handleNextStep}
+                      handleBack={handleBack}
                       config={config}
                     />
                   )}
                   {activeStep === 2 && (
-                    <SaveConfig config={config} onSuccess={handleFinish} />
+                    <SaveConfig
+                      config={config}
+                      handleBack={handleBack}
+                      onSuccess={handleFinish}
+                    />
                   )}
                 </MainCard>
-
-                {/* Navigation Buttons */}
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    mt: 4,
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    color="inherit"
-                    disabled={activeStep === 0}
-                    onClick={handleBack}
-                    sx={{
-                      textTransform: 'capitalize',
-                      px: 3,
-                      py: 1,
-                      borderRadius: '8px',
-                      boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.05)',
-                    }}
-                  >
-                    Back
-                  </Button>
-                  {activeStep < steps.length - 1 ? (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleNext}
-                      sx={{
-                        textTransform: 'capitalize',
-                        px: 3,
-                        py: 1,
-                        borderRadius: '8px',
-                        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-                      }}
-                    >
-                      Next
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleNext}
-                      sx={{
-                        textTransform: 'capitalize',
-                        px: 3,
-                        py: 1,
-                        borderRadius: '8px',
-                        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-                      }}
-                    >
-                      Finish
-                    </Button>
-                  )}
-                </Box>
               </>
             )}
           </Box>
