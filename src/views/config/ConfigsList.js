@@ -1,3 +1,5 @@
+// src/pages/config/ConfigsList.js
+
 import { useState, useEffect } from 'react';
 import {
   Box,
@@ -16,13 +18,15 @@ import {
   Alert,
   AlertTitle,
 } from '@mui/material';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import DeleteDialog from '../../components/Dialogs/DeleteDialog';
+import EditDialog from '../../components/Dialogs/EditDialog';
 import axios from 'axios';
+import supportedDatabases from './supportedDatabases';
 
-// Define the table headers
+// Table headers
 const headCells = [
   {
     id: 'config_name',
@@ -88,10 +92,13 @@ const ConfigsList = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Delete Dialog State
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedConfigId, setSelectedConfigId] = useState(null);
 
-  const navigate = useNavigate();
+  // Edit Dialog State
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editConfigId, setEditConfigId] = useState(null);
 
   const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -116,13 +123,13 @@ const ConfigsList = () => {
   }, []);
 
   // Handle opening the delete confirmation dialog
-  const handleClickOpen = (configId) => {
+  const handleDeleteClickOpen = (configId) => {
     setSelectedConfigId(configId);
     setDialogOpen(true);
   };
 
   // Handle closing the delete confirmation dialog
-  const handleClose = () => {
+  const handleDeleteClose = () => {
     setDialogOpen(false);
     setSelectedConfigId(null);
   };
@@ -135,17 +142,24 @@ const ConfigsList = () => {
       await axios.delete(`${API_URL}/config/delete_config/${selectedConfigId}`);
       // Refresh the configurations list after deletion
       fetchConfigs();
-      handleClose();
-      alert('Configuration deleted successfully.');
+      handleDeleteClose();
     } catch (err) {
       console.error('Error deleting configuration:', err);
-      alert('Failed to delete configuration. Please try again.');
+      setError('Failed to delete configuration. Please try again.');
+      handleDeleteClose();
     }
   };
 
-  // Handle editing a configuration
-  const handleEdit = (configId) => {
-    navigate(`/config/edit/${configId}`);
+  // Handle opening the edit dialog
+  const handleEditClickOpen = (configId) => {
+    setEditConfigId(configId);
+    setEditDialogOpen(true);
+  };
+
+  // Handle closing the edit dialog
+  const handleEditClose = () => {
+    setEditDialogOpen(false);
+    setEditConfigId(null);
   };
 
   return (
@@ -212,14 +226,14 @@ const ConfigsList = () => {
                 configs.map((config) => (
                   <TableRow
                     hover
-                    key={config._id} // Use _id instead of id
+                    key={config._id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell component="th" scope="row" align="left">
                       <Link
                         color="secondary"
                         component={RouterLink}
-                        to={`/config/details/${config._id}`} // Use _id
+                        to={`/config/details/${config._id}`}
                         underline="hover"
                       >
                         {config.config_name || 'Unnamed Config'}
@@ -241,7 +255,7 @@ const ConfigsList = () => {
                       <Tooltip title="Edit">
                         <IconButton
                           aria-label="Edit"
-                          onClick={() => handleEdit(config._id)} // Use _id
+                          onClick={() => handleEditClickOpen(config._id)}
                         >
                           <EditOutlined />
                         </IconButton>
@@ -251,7 +265,7 @@ const ConfigsList = () => {
                       <Tooltip title="Delete">
                         <IconButton
                           aria-label="Delete"
-                          onClick={() => handleClickOpen(config._id)} // Use _id
+                          onClick={() => handleDeleteClickOpen(config._id)}
                         >
                           <DeleteOutlined />
                         </IconButton>
@@ -269,8 +283,17 @@ const ConfigsList = () => {
       <DeleteDialog
         text="Configuration"
         open={dialogOpen}
-        handleClose={handleClose}
+        handleClose={handleDeleteClose}
         handleDelete={handleDelete}
+      />
+
+      {/* Edit Dialog */}
+      <EditDialog
+        open={editDialogOpen}
+        handleClose={handleEditClose}
+        configId={editConfigId}
+        refreshConfigs={fetchConfigs}
+        supportedDatabases={supportedDatabases}
       />
     </Box>
   );
