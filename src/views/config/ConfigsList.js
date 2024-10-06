@@ -14,12 +14,12 @@ import {
   Alert,
   AlertTitle,
 } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import DeleteDialog from '../../components/Dialogs/DeleteDialog';
 import EditDialog from '../../components/Dialogs/EditDialog';
 import axios from 'axios';
 import supportedDatabases from './supportedDatabases';
+import ViewDialog from '../../components/Dialogs/ViewDialog';
 
 // Table headers
 const headCells = [
@@ -68,6 +68,10 @@ const ConfigsList = () => {
   // Edit Dialog State
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editConfigId, setEditConfigId] = useState(null);
+
+  // View Dialog State
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const [viewConfigId, setViewConfigId] = useState(null);
 
   const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -129,6 +133,18 @@ const ConfigsList = () => {
   const handleEditClose = () => {
     setEditDialogOpen(false);
     setEditConfigId(null);
+  };
+
+  // Handle opening the view dialog
+  const handleViewClickOpen = (configId) => {
+    setViewConfigId(configId);
+    setViewDialogOpen(true);
+  };
+
+  // Handle closing the view dialog
+  const handleViewClose = () => {
+    setViewDialogOpen(false);
+    setViewConfigId(null);
   };
 
   return (
@@ -201,9 +217,9 @@ const ConfigsList = () => {
                     <TableCell component="th" scope="row" align="left">
                       <Link
                         color="secondary"
-                        component={RouterLink}
-                        to={`/config/details/${config._id}`}
+                        component="button"
                         underline="hover"
+                        onClick={() => handleViewClickOpen(config._id)}
                       >
                         {config.config_name || 'Unnamed Config'}
                       </Link>
@@ -264,6 +280,14 @@ const ConfigsList = () => {
         handleClose={handleEditClose}
         configId={editConfigId}
         refreshConfigs={fetchConfigs}
+        supportedDatabases={supportedDatabases}
+      />
+
+      {/* View Dialog */}
+      <ViewDialog
+        open={viewDialogOpen}
+        handleClose={handleViewClose}
+        configId={viewConfigId}
         supportedDatabases={supportedDatabases}
       />
     </Box>
