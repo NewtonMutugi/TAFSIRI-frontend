@@ -207,9 +207,13 @@ const ConnectionDetails = ({ onNextStep }) => {
   return (
     <Box>
       {/* Connection Details Form */}
+      <Typography variant="h5">Step 1: Database Connection</Typography>
       <form autoComplete="off" onSubmit={handleClick}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {/* Database selection and connection fields */}
+          <Typography variant="body2" color="textSecondary">
+            Select the database type in use and provide the connection details
+          </Typography>
           <Autocomplete
             id="db-select"
             options={images}
@@ -264,6 +268,9 @@ const ConnectionDetails = ({ onNextStep }) => {
           />
 
           {/* Table Name Input */}
+          <Typography variant="body2" color="textSecondary">
+            Provide the tables which Tafsiri should use for data extraction
+          </Typography>
           <Stack direction="row" spacing={1} alignItems="center">
             <TextField
               label="Table Name"

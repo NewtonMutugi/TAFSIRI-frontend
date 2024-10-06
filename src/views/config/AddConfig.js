@@ -15,9 +15,10 @@ import SaveConfig from './SaveConfig';
 import FinalStepPage from './FinalStepPage';
 import ConfigHeader from './ConfigHeader';
 import DocumentTitle from '../../utils/DocumentTitles';
+import DataDictionary from './DataDictionary';
 
-const steps = ['Connection Details', 'Save Configuration'];
-const titles = ['Connection Details', 'Save Configuration'];
+const steps = ['Connection Details', 'Data Dictionary', 'Save Configuration'];
+const titles = ['Connection Details', 'Data Dictionary', 'Save Configuration'];
 
 const AddConfigs = () => {
   DocumentTitle('Add Config');
@@ -128,6 +129,9 @@ const AddConfigs = () => {
                     <ConnectionDetails onNextStep={onNextStep} />
                   )}
                   {activeStep === 1 && (
+                    <DataDictionary onNextStep={onNextStep} />
+                  )}
+                  {activeStep === 2 && (
                     <SaveConfig connString={connString} onFinish={handleNext} />
                   )}
                 </MainCard>
