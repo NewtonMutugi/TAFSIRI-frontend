@@ -91,7 +91,7 @@ const LandingPage = () => {
             className="mt-6 bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-full"
             href="#"
           >
-            Sign Up Now
+            Try Tafsiri Now
           </Button>
         </Container>
       </section>
