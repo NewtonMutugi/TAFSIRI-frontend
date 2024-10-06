@@ -171,6 +171,7 @@ const EditDialog = ({
       example_prompt: formData.example_prompt,
       om_host: formData.om_host,
       om_jwt: formData.om_jwt,
+      updated_at: new Date().toISOString(),
     };
 
     try {

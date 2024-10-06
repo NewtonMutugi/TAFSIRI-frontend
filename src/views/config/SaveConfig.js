@@ -50,12 +50,14 @@ const SaveConfig = ({ config, onSuccess, handleBack }) => {
       return;
     }
     setLoading(true);
-
+    let created_at = new Date().toISOString();
     // Prepare the config data as per TafsiriConfigSchema
     const configData = {
       ...config,
       config_name: formData.config_name,
       example_prompt: formData.example_prompt,
+      created_at: created_at,
+      updated_at: created_at,
     };
     console.log('Config Data:', configData);
     try {
