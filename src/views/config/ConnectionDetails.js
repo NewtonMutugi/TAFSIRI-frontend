@@ -1,3 +1,5 @@
+// ConnectionDetails.js
+
 import { useState } from 'react';
 import {
   Alert,
@@ -9,79 +11,98 @@ import {
   TextField,
   Typography,
   Chip,
+  Grid,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import DeleteIcon from '@mui/icons-material/Delete';
+import PropTypes from 'prop-types';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
-const ConnectionDetails = ({ onNextStep }) => {
+const ConnectionDetails = ({ onNextStep, config }) => {
   const [formData, setFormData] = useState({
-    host_port: '',
-    username: '',
-    password: '',
-    database: '',
-    db_type: '',
-    tables: [''],
+    db_type: config.db_type || '',
+    db_host: config.db_host || '',
+    db_port: config.db_port || '',
+    db_user: config.db_user || '',
+    db_password: config.db_password || '',
+    db_name: config.db_name || '',
+    tableName: '',
   });
+  const [tables, setTables] = useState(config.tables || []);
   const [alertType, setAlertType] = useState(null);
   const [alertMessage, setAlertMessage] = useState('');
   const [testLoader, setTestLoader] = useState(false);
   const [formErrors, setFormErrors] = useState({
-    host_port: false,
-    username: false,
-    password: false,
-    database: false,
     db_type: false,
-    tables: false,
+    db_host: false,
+    db_port: false,
+    db_user: false,
+    db_password: false,
+    db_name: false,
+    tableName: false,
   });
-  const [tables, setTables] = useState([]);
 
+  // Validation for required fields
   const handleValidation = () => {
     let valid = true;
     const newErrors = { ...formErrors };
 
-    if (!formData.host_port.trim()) {
-      newErrors.host_port = true;
-      valid = false;
-    }
-    if (!formData.username.trim()) {
-      newErrors.username = true;
-      valid = false;
-    }
-    if (!formData.password.trim()) {
-      newErrors.password = true;
-      valid = false;
-    }
-    if (!formData.database.trim()) {
-      newErrors.database = true;
-      valid = false;
-    }
     if (!formData.db_type.trim()) {
       newErrors.db_type = true;
       valid = false;
     }
-    if (
-      !formData.tables.length ||
-      formData.tables.some((table) => !table.trim())
-    ) {
-      newErrors.tables = true;
+    if (!formData.db_host.trim()) {
+      newErrors.db_host = true;
       valid = false;
+    }
+    if (!formData.db_port || isNaN(formData.db_port)) {
+      newErrors.db_port = true;
+      valid = false;
+    }
+    if (!formData.db_user.trim()) {
+      newErrors.db_user = true;
+      valid = false;
+    }
+    if (!formData.db_password.trim()) {
+      newErrors.db_password = true;
+      valid = false;
+    }
+    if (!formData.db_name.trim()) {
+      newErrors.db_name = true;
+      valid = false;
+    }
+    if (!tables.length) {
+      // At least one table required
+      valid = false;
+      setAlertType('error');
+      setAlertMessage('At least one table is required');
     } else {
-      newErrors.tables = false;
+      setAlertMessage('');
+      setAlertType(null);
     }
 
     setFormErrors(newErrors);
     return valid;
   };
 
+  // Proceed to the next step with collected data
   const handleClick = () => {
     if (handleValidation()) {
-      let conn_str = `${formData.db_type}://${formData.username}:${formData.password}@${formData.host_port}/${formData.database}`;
-      onNextStep(conn_str);
+      const partialData = {
+        db_type: formData.db_type,
+        db_host: formData.db_host,
+        db_port: parseInt(formData.db_port, 10),
+        db_user: formData.db_user,
+        db_password: formData.db_password,
+        db_name: formData.db_name,
+        tables: tables,
+      };
+      onNextStep(partialData);
     }
   };
 
+  // Handle changes in the Autocomplete (Database Type)
   const handleAutocompleteChange = (event, newValue) => {
     if (newValue) {
       setFormData((prevData) => ({ ...prevData, db_type: newValue.driver }));
@@ -93,21 +114,31 @@ const ConnectionDetails = ({ onNextStep }) => {
     }
   };
 
+  // Handle input changes
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
+    setFormErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: false,
+    }));
   };
 
+  // Test the database connection using the backend API
   const handleConnectionTest = async (event) => {
+    event.preventDefault();
     if (handleValidation()) {
       setTestLoader(true);
-      event.preventDefault();
 
       const apiRequest = {
-        ...formData,
+        db_type: formData.db_type,
+        host_port: `${formData.db_host}:${formData.db_port}`,
+        database: formData.db_name,
+        username: formData.db_user,
+        password: formData.db_password,
       };
 
       try {
@@ -130,27 +161,32 @@ const ConnectionDetails = ({ onNextStep }) => {
         }
       } catch (error) {
         setAlertType('error');
-        console.error('Error testing connection:', JSON.stringify(error));
-        setAlertMessage(error.detail);
+        console.error('Error testing connection:', error);
+        setAlertMessage('An error occurred while testing the connection.');
         setTestLoader(false);
       }
     }
   };
+
+  // Add a table to the tables array
   const handleAddTable = () => {
     if (formData.tableName.trim()) {
-      setTables((prevTables) => [...prevTables, formData.tableName]);
-      setFormData((prevData) => ({ ...prevData, tableName: '' })); // Clear input
+      setTables((prevTables) => [...prevTables, formData.tableName.trim()]);
+      setFormData((prevData) => ({ ...prevData, tableName: '' }));
+      setFormErrors((prevErrors) => ({ ...prevErrors, tableName: false }));
     } else {
       setFormErrors((prevErrors) => ({ ...prevErrors, tableName: true }));
     }
   };
 
+  // Remove a table from the tables array
   const handleRemoveTable = (tableToRemove) => {
     setTables((prevTables) =>
       prevTables.filter((table) => table !== tableToRemove)
     );
   };
 
+  // Database type options with images and drivers
   const images = [
     {
       url: '/data_sources/mysql.png',
@@ -216,55 +252,87 @@ const ConnectionDetails = ({ onNextStep }) => {
           </Typography>
           <Autocomplete
             id="db-select"
-            options={images}
+            options={images.filter((option) => !option.disabled)}
             autoHighlight
             size="small"
             getOptionLabel={(option) => option.title}
             onChange={handleAutocompleteChange}
+            renderOption={(props, option) => (
+              <Box component="li" {...props} key={option.driver}>
+                {option.url && (
+                  <img
+                    loading="lazy"
+                    width="20"
+                    src={option.url}
+                    alt=""
+                    style={{ marginRight: 8 }}
+                  />
+                )}
+                {option.title}
+              </Box>
+            )}
             renderInput={(params) => (
               <TextField
                 {...params}
                 label="Database Service"
                 variant="outlined"
                 error={formErrors.db_type}
-                helperText={
-                  formErrors.db_type && 'Data source service is required'
-                }
+                helperText={formErrors.db_type && 'Database type is required'}
               />
             )}
           />
-          <TextField
-            label="Host and Port"
-            name="host_port"
-            value={formData.host_port}
-            onChange={handleChange}
-            error={formErrors.host_port}
-            helperText={formErrors.host_port && 'Host and Port are required'}
-          />
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Host"
+                name="db_host"
+                value={formData.db_host}
+                onChange={handleChange}
+                error={formErrors.db_host}
+                helperText={formErrors.db_host && 'Host is required'}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Port"
+                name="db_port"
+                type="number"
+                value={formData.db_port}
+                onChange={handleChange}
+                error={formErrors.db_port}
+                helperText={formErrors.db_port && 'Valid port is required'}
+                fullWidth
+              />
+            </Grid>
+          </Grid>
           <TextField
             label="DB Username"
-            name="username"
-            value={formData.username}
+            name="db_user"
+            value={formData.db_user}
             onChange={handleChange}
-            error={formErrors.username}
-            helperText={formErrors.username && 'Username is required'}
+            error={formErrors.db_user}
+            helperText={formErrors.db_user && 'Username is required'}
+            fullWidth
           />
           <TextField
             label="DB Password"
-            name="password"
+            name="db_password"
             type="password"
-            value={formData.password}
+            value={formData.db_password}
             onChange={handleChange}
-            error={formErrors.password}
-            helperText={formErrors.password && 'Password is required'}
+            error={formErrors.db_password}
+            helperText={formErrors.db_password && 'Password is required'}
+            fullWidth
           />
           <TextField
-            label="Database"
-            name="database"
-            value={formData.database}
+            label="Database Name"
+            name="db_name"
+            value={formData.db_name}
             onChange={handleChange}
-            error={formErrors.database}
-            helperText={formErrors.database && 'Database is required'}
+            error={formErrors.db_name}
+            helperText={formErrors.db_name && 'Database name is required'}
+            fullWidth
           />
 
           {/* Table Name Input */}
@@ -311,9 +379,6 @@ const ConnectionDetails = ({ onNextStep }) => {
             >
               Test Connection
             </LoadingButton>
-            {/* <Button variant="contained" color="primary" onClick={handleClick}>
-              Save
-            </Button> */}
             <Button type={'reset'} variant="contained" color="error">
               Cancel
             </Button>
@@ -322,7 +387,7 @@ const ConnectionDetails = ({ onNextStep }) => {
       </form>
       {/* Alert for success */}
       {alertType === 'success' && (
-        <Alert severity="success">
+        <Alert severity="success" sx={{ mt: 2 }}>
           <AlertTitle>Success</AlertTitle>
           <Typography variant="body1">{alertMessage}</Typography>
         </Alert>
@@ -330,13 +395,18 @@ const ConnectionDetails = ({ onNextStep }) => {
 
       {/* Alert for error */}
       {alertType === 'error' && (
-        <Alert severity="error">
+        <Alert severity="error" sx={{ mt: 2 }}>
           <AlertTitle>Error</AlertTitle>
           <Typography variant="body1">{alertMessage}</Typography>
         </Alert>
       )}
     </Box>
   );
+};
+
+ConnectionDetails.propTypes = {
+  onNextStep: PropTypes.func.isRequired,
+  config: PropTypes.object.isRequired,
 };
 
 export default ConnectionDetails;

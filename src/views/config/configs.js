@@ -1,3 +1,5 @@
+// Configs.js
+
 import { useNavigate } from 'react-router-dom';
 import { Box, Grid, Paper, useTheme } from '@mui/material';
 import ConfigsList from './ConfigsList';
@@ -9,6 +11,7 @@ const Configs = () => {
   const navigate = useNavigate();
   const theme = useTheme();
 
+  // Navigate to the Add Configurations page
   const handleNewConnectionClick = () => {
     navigate('/config/add');
   };
