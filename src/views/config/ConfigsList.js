@@ -1,11 +1,8 @@
-// src/pages/config/ConfigsList.js
-
 import { useState, useEffect } from 'react';
 import {
   Box,
   IconButton,
   Link,
-  Stack,
   Table,
   TableBody,
   TableCell,
@@ -13,13 +10,11 @@ import {
   TableHead,
   TableRow,
   Tooltip,
-  Typography,
   CircularProgress,
   Alert,
   AlertTitle,
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import DeleteDialog from '../../components/Dialogs/DeleteDialog';
 import EditDialog from '../../components/Dialogs/EditDialog';
@@ -32,7 +27,7 @@ const headCells = [
     id: 'config_name',
     align: 'left',
     disablePadding: true,
-    label: 'Name',
+    label: 'Config Name',
   },
   {
     id: 'db_type',
@@ -41,10 +36,10 @@ const headCells = [
     label: 'Database Type',
   },
   {
-    id: 'is_active',
+    id: 'db_host',
     align: 'left',
     disablePadding: false,
-    label: 'Status',
+    label: 'Database Host',
   },
   {
     id: 'updated_at',
@@ -59,32 +54,6 @@ const headCells = [
     label: '',
   },
 ];
-
-// Component to display the status
-const OrderStatus = ({ status }) => {
-  let title;
-
-  switch (status) {
-    case true:
-      title = 'Active';
-      break;
-    case false:
-      title = 'Inactive';
-      break;
-    default:
-      title = 'Unknown';
-  }
-
-  return (
-    <Stack direction="row" spacing={1} alignItems="center">
-      <Typography>{title}</Typography>
-    </Stack>
-  );
-};
-
-OrderStatus.propTypes = {
-  status: PropTypes.bool,
-};
 
 // Main ConfigsList component
 const ConfigsList = () => {
@@ -210,7 +179,7 @@ const ConfigsList = () => {
                     align={headCell.align}
                     padding={headCell.disablePadding ? 'none' : 'normal'}
                   >
-                    {headCell.label}
+                    <strong>{headCell.label}</strong>
                   </TableCell>
                 ))}
               </TableRow>
@@ -243,7 +212,7 @@ const ConfigsList = () => {
                       {config.db_type || 'N/A'}
                     </TableCell>
                     <TableCell align="left">
-                      <OrderStatus status={config.is_active} />
+                      {config.db_host || 'Host not found'}
                     </TableCell>
                     <TableCell align="right">
                       {config.updated_at
