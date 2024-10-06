@@ -1,5 +1,3 @@
-// FinalStepPage.js
-
 import { Box, Button, Stack, Typography } from '@mui/material';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -10,12 +8,12 @@ const FinalStepPage = () => {
 
   // Navigate to the configurations list
   const handleFinish = () => {
-    navigate('/configs/list');
+    navigate('/config');
   };
 
   // Navigate to upload the data dictionary (if applicable)
   const handleDictUpload = () => {
-    navigate('/configs/list');
+    navigate('/config');
   };
   return (
     <React.Fragment>
