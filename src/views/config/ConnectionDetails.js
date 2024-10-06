@@ -1,5 +1,3 @@
-// ConnectionDetails.js
-
 import { useState } from 'react';
 import {
   Alert,
@@ -87,7 +85,8 @@ const ConnectionDetails = ({ onNextStep, config }) => {
   };
 
   // Proceed to the next step with collected data
-  const handleClick = () => {
+  const handleClick = (event) => {
+    event.preventDefault();
     if (handleValidation()) {
       const partialData = {
         db_type: formData.db_type,
@@ -99,6 +98,9 @@ const ConnectionDetails = ({ onNextStep, config }) => {
         tables: tables,
       };
       onNextStep(partialData);
+    } else {
+      setAlertType('error');
+      return;
     }
   };
 
@@ -189,30 +191,30 @@ const ConnectionDetails = ({ onNextStep, config }) => {
   // Database type options with images and drivers
   const images = [
     {
-      url: '/data_sources/mysql.png',
+      url: '',
       title: 'MySQL',
       driver: 'mysql',
     },
     {
-      url: '/data_sources/mssql.png',
+      url: '',
       title: 'MSSQL',
       driver: 'mssql+pymssql',
     },
     {
-      url: '/data_sources/pgsql.png',
+      url: '',
       title: 'Postgres',
       driver: 'postgresql',
     },
     {
-      url: '/data_sources/sqlite.png',
+      url: '',
       title: 'SQLite',
       driver: 'sqlite',
     },
     {
-      url: '/data_sources/mongo.png',
+      url: '',
       title: 'Mongo DB',
       driver: 'mongo',
-      disabled: true,
+      disabled: false,
     },
     {
       url: '',
@@ -233,7 +235,7 @@ const ConnectionDetails = ({ onNextStep, config }) => {
       disabled: true,
     },
     {
-      url: '/data_sources/snowflake.png',
+      url: '',
       title: 'Snowflake',
       driver: 'snow',
       disabled: true,
@@ -383,6 +385,25 @@ const ConnectionDetails = ({ onNextStep, config }) => {
               Cancel
             </Button>
           </Stack>
+        </Box>
+        {/* Navigation Button */}
+        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+          <Box sx={{ flex: '1 1 auto' }} />
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{
+              textTransform: 'capitalize',
+              px: 3,
+              py: 1,
+              borderRadius: '8px',
+              boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+            }}
+            onClick={handleClick}
+          >
+            Next
+          </Button>
         </Box>
       </form>
       {/* Alert for success */}
