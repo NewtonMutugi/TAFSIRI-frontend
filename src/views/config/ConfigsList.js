@@ -79,7 +79,7 @@ const ConfigsList = () => {
   const fetchConfigs = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`${API_URL}/config/get_configs`);
+      const response = await axios.get(`${API_URL}/api/config/get_configs`);
       setConfigs(response.data);
       setError(null);
     } catch (err) {
@@ -112,7 +112,7 @@ const ConfigsList = () => {
     if (!selectedConfigId) return;
 
     try {
-      await axios.delete(`${API_URL}/config/delete_config/${selectedConfigId}`);
+      await axios.delete(`${API_URL}/api/config/delete_config/${selectedConfigId}`);
       // Refresh the configurations list after deletion
       fetchConfigs();
       handleDeleteClose();
