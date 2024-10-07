@@ -31,7 +31,7 @@ const ViewDialog = ({ configId, open, handleClose, supportedDatabases }) => {
         setIsLoading(true);
         try {
           const response = await axios.get(
-            `${API_URL}/config/get_config/${configId}`
+            `${API_URL}/api/config/get_config/${configId}`
           );
           setConfig(response.data);
           setError(null);
