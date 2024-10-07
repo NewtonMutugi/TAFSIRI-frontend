@@ -64,7 +64,7 @@ const EditDialog = ({
       const fetchConfig = async () => {
         try {
           const response = await axios.get(
-            `${API_URL}/config/get_config/${configId}`
+            `${API_URL}/api/config/get_config/${configId}`
           );
           const data = response.data;
           setFormData({
@@ -176,7 +176,7 @@ const EditDialog = ({
 
     try {
       await axios.put(
-        `${API_URL}/config/update_config/${configId}`,
+        `${API_URL}/api/config/update_config/${configId}`,
         configData
       );
       setAlertType('success');
