@@ -145,7 +145,7 @@ const ConnectionDetails = ({ onNextStep, config }) => {
       };
 
       try {
-        const response = await fetch(`${API_URL}/config/test_db_connection`, {
+        const response = await fetch(`${API_URL}/api/config/test_db_connection`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

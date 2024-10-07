@@ -61,7 +61,7 @@ const SaveConfig = ({ config, onSuccess, handleBack }) => {
     };
     console.log('Config Data:', configData);
     try {
-      const response = await fetch(`${API_URL}/config/new_config`, {
+      const response = await fetch(`${API_URL}/api/config/new_config`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
