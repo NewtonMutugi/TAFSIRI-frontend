@@ -22,7 +22,7 @@ export default function ConfigListMenu({ onSelect }) {
     const fetchConfigurations = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${API_URL}/config/get_configs`);
+        const response = await axios.get(`${API_URL}/api/config/get_configs`);
         if (response.status === 200) {
           setOptions(response.data);
           if (response.data.length > 0) {
