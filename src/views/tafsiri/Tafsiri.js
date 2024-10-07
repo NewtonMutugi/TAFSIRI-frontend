@@ -48,10 +48,7 @@ const Tafsiri = () => {
   const [feedback, setFeedback] = useState('');
   const [feedbackSent, setFeedbackSent] = useState(false);
   const [feedbackError, setFeedbackError] = useState('');
-  // const [vizType, setVizType] = useState('table');
-  // const handleChange = (event) => {
-  //   setVizType(event.target.value);
-  // };
+  const [selectedConfigId, setSelectedConfigId] = useState('');
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -67,6 +64,11 @@ const Tafsiri = () => {
     p: 4,
   };
 
+  const handleConfigSelect = (configId) => {
+    setSelectedConfigId(configId);
+    console.log('Selected Configuration ID:', configId);
+  };
+
   const handleCopy = () => {
     navigator.clipboard
       .writeText(sqlQuery)
@@ -78,36 +80,41 @@ const Tafsiri = () => {
         console.error('Failed to copy text: ', err);
       });
   };
-  // Variable that will store objectId
 
   const handleGenerateSQL = async () => {
+    if (!selectedConfigId) {
+      setError(
+        'Please select a configuration before generating the SQL query.'
+      );
+      return;
+    }
+
     setLoading(true);
     setSqlQuery(''); // Clear previous SQL query
     setData([]); // Clear previous data
     setColumns([]); // Clear previous columns
     setError(''); // Clear previous error
     setQueryGenerated(false);
-    console.log('Backend URL:' + BACKEND_URL);
-    console.log('Superset URL' + SUPERSET_URL);
+    console.log('Backend URL:', BACKEND_URL);
+    console.log('Superset URL:', SUPERSET_URL);
     try {
       // Fetch the user and get user_id
       const user = await userManager.getUser();
       const user_id = user.profile.sub;
 
-      const response = await fetch(
-        BACKEND_URL + '/query_from_natural_language',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: '*/*',
-          },
-          body: JSON.stringify({
-            question: query,
-            user_id: user_id,
-          }),
-        }
-      );
+      const response = await fetch(`${BACKEND_URL}/api/tafsiri/question`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: '*/*',
+        },
+        body: JSON.stringify({
+          question: query,
+          user_id: user_id,
+          config_id: selectedConfigId,
+        }),
+      });
+
       const result = await response.json();
       const responseId = result.saved_response_id;
       // Save responseId to local storage
@@ -126,6 +133,8 @@ const Tafsiri = () => {
         } else {
           setError(result.message || 'Failed to execute SQL.');
         }
+      } else {
+        setError(result.detail || 'Failed to generate SQL.');
       }
     } catch (error) {
       console.error('Error generating SQL:', error);
@@ -248,7 +257,8 @@ const Tafsiri = () => {
       <Card sx={{ width: '100%', maxWidth: 800, p: 2 }}>
         <CardContent>
           <div className="flex flex-row justify-between">
-            <SimpleListMenu className="justify-start" />
+            {/* Pass the handleConfigSelect to SimpleListMenu */}
+            <SimpleListMenu onSelect={handleConfigSelect} />
             <span className="w-4" />
           </div>
 
@@ -281,6 +291,7 @@ const Tafsiri = () => {
               </em>
             </Typography>
 
+            {/* Question Input */}
             <TextField
               id="outlined-textarea"
               label="Enter your question"
@@ -292,6 +303,7 @@ const Tafsiri = () => {
               onChange={handleQueryChange}
             />
 
+            {/* Generate Button */}
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <Button
                 variant="contained"
@@ -304,6 +316,7 @@ const Tafsiri = () => {
               </Button>
             </Box>
 
+            {/* SQL Query Display */}
             <Typography variant="body1" component="p">
               Your SQL query is here:
             </Typography>
@@ -342,6 +355,7 @@ const Tafsiri = () => {
               </Tooltip>
             </Box>
 
+            {/* Query Results and Superset Button */}
             {data.length > 0 ? (
               <div
                 style={{
@@ -372,24 +386,17 @@ const Tafsiri = () => {
                     )}
                   </Button>
                 </Box>
-
-                {/* <FormControl sx={{ width: 320 }}>
-                  <InputLabel id="labelVizType">Select Visualization</InputLabel>
-                  <Select labelId="labelVizType" id="vizType" value={vizType} onChange={handleChange} label="Select Visualization">
-                    <MenuItem value="table">Table</MenuItem>
-                    <MenuItem value="pie-chart">Pie Chart</MenuItem>
-                    <MenuItem value="bar-chart">Bar Chart</MenuItem>
-                  </Select>
-                </FormControl> */}
               </div>
             ) : null}
 
+            {/* Error Message */}
             {error && (
               <Typography variant="body2" color="error" component="p">
                 {error}
               </Typography>
             )}
 
+            {/* Results Table */}
             {data.length > 0 ? (
               <TableContainer component={Paper}>
                 <Table>
@@ -432,6 +439,8 @@ const Tafsiri = () => {
           </Stack>
         </CardContent>
       </Card>
+
+      {/* Feedback Floating Action Button */}
       {data.length > 0 ? (
         <div>
           <Fab
@@ -451,11 +460,12 @@ const Tafsiri = () => {
             <RateReviewIcon />
           </Fab>
 
+          {/* Feedback Modal */}
           <Modal
             open={open}
             onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
+            aria-labelledby="feedback-modal-title"
+            aria-describedby="feedback-modal-description"
           >
             <Box sx={style}>
               <Typography variant="body1" component="h3">
@@ -467,6 +477,7 @@ const Tafsiri = () => {
                 onChange={(event, newValue) => {
                   setRatingValue(newValue);
                 }}
+                sx={{ mt: 2 }}
               />
               <TextField
                 id="outlined-feedback"
@@ -477,11 +488,13 @@ const Tafsiri = () => {
                 variant="outlined"
                 value={feedback}
                 onChange={handleFeedbackChange}
+                sx={{ mt: 2 }}
               />
               <Box
                 sx={{
                   display: 'flex',
                   justifyContent: 'center',
+                  mt: 2,
                 }}
               >
                 <Button
