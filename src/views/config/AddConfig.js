@@ -1,13 +1,5 @@
 import { useState } from 'react';
-import {
-  Box,
-  Stepper,
-  Step,
-  StepLabel,
-  Typography,
-  useTheme,
-  Grid,
-} from '@mui/material';
+import { Box, Stepper, Step, StepLabel, Typography, useTheme, Grid } from '@mui/material';
 import ConnectionDetails from './ConnectionDetails';
 import MainCard from '../../components/MainCard';
 import SaveConfig from './SaveConfig';
@@ -26,20 +18,8 @@ const AddConfigs = () => {
   const theme = useTheme();
 
   // Initialize the configuration state
-  const [config, setConfig] = useState({
-    config_name: '',
-    tables: [],
-    db_type: '',
-    db_host: '',
-    db_port: 0,
-    db_user: '',
-    db_password: '',
-    db_name: '',
-    example_prompt: '',
-    om_host: '',
-    om_jwt: '',
+  const [config, setConfig] = useState({ config_name: '', tables: [], db_type: '', db_host: '', db_port: 0, db_user: '', db_password: '', db_name: '', example_prompt: '', om_host: '', om_jwt: '',
   });
-
   // Navigate to the next step
   const handleNext = () => {
     let newSkipped = skipped;
@@ -68,35 +48,16 @@ const AddConfigs = () => {
       sx={{ width: '100%', mt: 4, display: 'flex', justifyContent: 'center' }}
       className="dark:bg-gray-900"
     >
-      <Grid
-        container
-        rowSpacing={4.5}
-        columnSpacing={2.75}
-        alignItems="center"
-        justifyContent="center"
-        maxWidth="1200px"
+      <Grid container rowSpacing={4.5} columnSpacing={2.75} alignItems="center" justifyContent="center" maxWidth="1200px"
       >
         <ConfigHeader />
         <Box
-          sx={{
-            width: '100%',
-            mt: 4,
-            display: 'flex',
-            justifyContent: 'center',
-            bgcolor: theme.palette.background.default,
-            minHeight: '100vh',
-            py: 4,
+          sx={{ width: '100%', mt: 4, display: 'flex', justifyContent: 'center', bgcolor: theme.palette.background.default, minHeight: '100vh', py: 4,
           }}
           className="dark:bg-gray-900"
         >
           <Box
-            sx={{
-              width: '100%',
-              maxWidth: '800px',
-              bgcolor: theme.palette.background.paper,
-              p: 4,
-              borderRadius: '16px',
-              boxShadow: '0px 8px 24px rgba(0, 0, 0, 0.1)',
+            sx={{ width: '100%', maxWidth: '800px', bgcolor: theme.palette.background.paper, p: 4, borderRadius: '16px', boxShadow: '0px 8px 24px rgba(0, 0, 0, 0.1)',
             }}
           >
             {/* Stepper */}
@@ -127,20 +88,12 @@ const AddConfigs = () => {
             ) : (
               <>
                 <MainCard
-                  sx={{
-                    p: 3,
-                    borderRadius: '12px',
-                    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.05)',
-                    bgcolor: theme.palette.background.paper,
-                  }}
+                  sx={{ p: 3, borderRadius: '12px', boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.05)', bgcolor: theme.palette.background.paper}}
                   content={true}
                   title={
                     <Typography
                       variant="h6"
-                      sx={{
-                        fontWeight: 'bold',
-                        color: theme.palette.text.primary,
-                      }}
+                      sx={{ fontWeight: 'bold', color: theme.palette.text.primary}}
                     >
                       {titles[activeStep]}
                     </Typography>
@@ -153,17 +106,11 @@ const AddConfigs = () => {
                     />
                   )}
                   {activeStep === 1 && (
-                    <DataDictionary
-                      onNextStep={handleNextStep}
-                      handleBack={handleBack}
-                      config={config}
+                    <DataDictionary onNextStep={handleNextStep} handleBack={handleBack} config={config}
                     />
                   )}
                   {activeStep === 2 && (
-                    <SaveConfig
-                      config={config}
-                      handleBack={handleBack}
-                      onSuccess={handleFinish}
+                    <SaveConfig config={config} handleBack={handleBack} onSuccess={handleFinish}
                     />
                   )}
                 </MainCard>

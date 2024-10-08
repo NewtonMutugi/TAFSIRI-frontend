@@ -1,15 +1,5 @@
 import { useState } from 'react';
-import {
-  Alert,
-  AlertTitle,
-  Autocomplete,
-  Box,
-  Button,
-  Stack,
-  TextField,
-  Typography,
-  Chip,
-  Grid,
+import { Alert, AlertTitle, Autocomplete, Box, Button, Stack, TextField, Typography, Chip, Grid,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -19,27 +9,13 @@ import supportedDatabases from './supportedDatabases';
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 const ConnectionDetails = ({ onNextStep, config }) => {
-  const [formData, setFormData] = useState({
-    db_type: config.db_type || '',
-    db_host: config.db_host || '',
-    db_port: config.db_port || '',
-    db_user: config.db_user || '',
-    db_password: config.db_password || '',
-    db_name: config.db_name || '',
-    tableName: '',
+  const [formData, setFormData] = useState({ db_type: config.db_type || '', db_host: config.db_host || '', db_port: config.db_port || '', db_user: config.db_user || '', db_password: config.db_password || '', db_name: config.db_name || '', tableName: '',
   });
   const [tables, setTables] = useState(config.tables || []);
   const [alertType, setAlertType] = useState(null);
   const [alertMessage, setAlertMessage] = useState('');
   const [testLoader, setTestLoader] = useState(false);
-  const [formErrors, setFormErrors] = useState({
-    db_type: false,
-    db_host: false,
-    db_port: false,
-    db_user: false,
-    db_password: false,
-    db_name: false,
-    tableName: false,
+  const [formErrors, setFormErrors] = useState({ db_type: false, db_host: false, db_port: false, db_user: false, db_password: false, db_name: false, tableName: false,
   });
 
   // Validation for required fields
@@ -209,24 +185,14 @@ const ConnectionDetails = ({ onNextStep, config }) => {
             renderOption={(props, option) => (
               <Box component="li" {...props} key={option.driver}>
                 {option.url && (
-                  <img
-                    loading="lazy"
-                    width="20"
-                    src={option.url}
-                    alt=""
-                    style={{ marginRight: 8 }}
+                  <img loading="lazy" width="20" src={option.url} alt="" style={{ marginRight: 8 }}
                   />
                 )}
                 {option.title}
               </Box>
             )}
             renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Database Service"
-                variant="outlined"
-                error={formErrors.db_type}
-                helperText={formErrors.db_type && 'Database type is required'}
+              <TextField {...params} label="Database Service" variant="outlined" error={formErrors.db_type} helperText={formErrors.db_type && 'Database type is required'}
               />
             )}
           />
@@ -243,45 +209,15 @@ const ConnectionDetails = ({ onNextStep, config }) => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                label="Port"
-                name="db_port"
-                type="number"
-                value={formData.db_port}
-                onChange={handleChange}
-                error={formErrors.db_port}
-                helperText={formErrors.db_port && 'Valid port is required'}
-                fullWidth
+              <TextField label="Port" name="db_port" type="number" value={formData.db_port} onChange={handleChange} error={formErrors.db_port} helperText={formErrors.db_port && 'Valid port is required'} fullWidth
               />
             </Grid>
           </Grid>
-          <TextField
-            label="DB Username"
-            name="db_user"
-            value={formData.db_user}
-            onChange={handleChange}
-            error={formErrors.db_user}
-            helperText={formErrors.db_user && 'Username is required'}
-            fullWidth
+          <TextField label="DB Username" name="db_user" value={formData.db_user} onChange={handleChange} error={formErrors.db_user} helperText={formErrors.db_user && 'Username is required'} fullWidth
           />
-          <TextField
-            label="DB Password"
-            name="db_password"
-            type="password"
-            value={formData.db_password}
-            onChange={handleChange}
-            error={formErrors.db_password}
-            helperText={formErrors.db_password && 'Password is required'}
-            fullWidth
+          <TextField label="DB Password" name="db_password" type="password" value={formData.db_password} onChange={handleChange} error={formErrors.db_password} helperText={formErrors.db_password && 'Password is required'} fullWidth
           />
-          <TextField
-            label="Database Name"
-            name="db_name"
-            value={formData.db_name}
-            onChange={handleChange}
-            error={formErrors.db_name}
-            helperText={formErrors.db_name && 'Database name is required'}
-            fullWidth
+          <TextField label="Database Name" name="db_name" value={formData.db_name} onChange={handleChange} error={formErrors.db_name} helperText={formErrors.db_name && 'Database name is required'} fullWidth
           />
 
           {/* Table Name Input */}
@@ -289,13 +225,7 @@ const ConnectionDetails = ({ onNextStep, config }) => {
             Provide the tables which Tafsiri should use for data extraction
           </Typography>
           <Stack direction="row" spacing={1} alignItems="center">
-            <TextField
-              label="Table Name"
-              name="tableName"
-              value={formData.tableName}
-              onChange={handleChange}
-              error={formErrors.tableName}
-              helperText={formErrors.tableName && 'Please enter a table name'}
+            <TextField label="Table Name" name="tableName" value={formData.tableName} onChange={handleChange} error={formErrors.tableName} helperText={formErrors.tableName && 'Please enter a table name'}
             />
             <Button variant="contained" onClick={handleAddTable}>
               Add Table
@@ -305,11 +235,7 @@ const ConnectionDetails = ({ onNextStep, config }) => {
           {/* Display Added Tables as Chips */}
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
             {tables.map((table, index) => (
-              <Chip
-                key={index}
-                label={table}
-                onDelete={() => handleRemoveTable(table)}
-                deleteIcon={<DeleteIcon />}
+              <Chip key={index} label={table} onDelete={() => handleRemoveTable(table)} deleteIcon={<DeleteIcon />}
               />
             ))}
           </Box>
@@ -336,17 +262,7 @@ const ConnectionDetails = ({ onNextStep, config }) => {
         {/* Navigation Button */}
         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
           <Box sx={{ flex: '1 1 auto' }} />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            sx={{
-              textTransform: 'capitalize',
-              px: 3,
-              py: 1,
-              borderRadius: '8px',
-              boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-            }}
+          <Button type="submit" variant="contained" color="primary" sx={{ textTransform: 'capitalize', px: 3, py: 1, borderRadius: '8px', boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', }}
             onClick={handleClick}
           >
             Next

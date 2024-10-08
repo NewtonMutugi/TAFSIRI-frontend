@@ -1,14 +1,5 @@
-// DataDictionary.js
-
 import { useState } from 'react';
-import {
-  Box,
-  TextField,
-  Typography,
-  Button,
-  Alert,
-  AlertTitle,
-} from '@mui/material';
+import { Box, TextField, Typography, Button, Alert, AlertTitle } from '@mui/material';
 import PropTypes from 'prop-types';
 
 const DataDictionary = ({ onNextStep, config, handleBack }) => {
