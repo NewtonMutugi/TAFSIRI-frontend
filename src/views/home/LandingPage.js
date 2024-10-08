@@ -29,7 +29,7 @@ const LandingPage = () => {
           </Typography>
           <Typography variant="body1" className="text-lg md:text-xl mt-4">
             Transform your questions into precise SQL queries powered by
-            LlamaIndex and informed by data dictionaries.
+            TAFSIRI.
           </Typography>
           <div className="mt-6">
             <Button
