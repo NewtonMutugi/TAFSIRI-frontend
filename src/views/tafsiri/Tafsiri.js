@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Stack,
   Typography,
@@ -29,6 +29,7 @@ import RateReviewIcon from '@mui/icons-material/RateReview';
 import userManager from '../../utils/UserManager';
 import DocumentTitle from '../../utils/DocumentTitles';
 import SimpleListMenu from '../../components/SimpleListMenu';
+import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const SUPERSET_URL = process.env.REACT_APP_SUPERSET_URL;
@@ -53,6 +54,8 @@ const Tafsiri = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [ratingValue, setRatingValue] = useState(2);
+  const [options, setOptions] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const style = {
     position: 'absolute',
     top: '50%',
@@ -63,6 +66,37 @@ const Tafsiri = () => {
     boxShadow: 24,
     p: 4,
   };
+
+  // Fetch the configurations when the component mounts
+  useEffect(() => {
+    const fetchConfigurations = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `${BACKEND_URL}/api/config/get_configs`
+        );
+        if (response.status === 200) {
+          setOptions(response.data);
+          if (response.data.length > 0) {
+            setSelectedIndex(0);
+            if (handleConfigSelect) {
+              handleConfigSelect(response.data[0]._id);
+            }
+          }
+        } else {
+          setError('Failed to fetch configurations.');
+          console.error('Error fetching configurations:', response.statusText);
+        }
+      } catch (error) {
+        setError('An error occurred while fetching configurations.');
+        console.error('Error fetching configurations:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchConfigurations();
+  }, []);
 
   const handleConfigSelect = (configId) => {
     setSelectedConfigId(configId);
@@ -258,7 +292,13 @@ const Tafsiri = () => {
         <CardContent>
           <div className="flex flex-row justify-between">
             {/* Pass the handleConfigSelect to SimpleListMenu */}
-            <SimpleListMenu onSelect={handleConfigSelect} />
+            <SimpleListMenu
+              setSelectedIndex={setSelectedIndex}
+              options={options}
+              selectedIndex={selectedIndex}
+              onSelect={handleConfigSelect}
+              error={error}
+            />
             <span className="w-4" />
           </div>
 

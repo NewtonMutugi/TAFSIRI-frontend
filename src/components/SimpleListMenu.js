@@ -1,50 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState} from 'react';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 
-export default function ConfigListMenu({ onSelect }) {
+export default function ConfigListMenu({
+  setSelectedIndex,
+  options,
+  selectedIndex,
+  onSelect,
+  error,
+}) {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [options, setOptions] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
   const open = Boolean(anchorEl);
-  const API_URL = process.env.REACT_APP_BACKEND_URL;
-
-  // Fetch the configurations when the component mounts
-  useEffect(() => {
-    const fetchConfigurations = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(`${API_URL}/api/config/get_configs`);
-        if (response.status === 200) {
-          setOptions(response.data);
-          if (response.data.length > 0) {
-            setSelectedIndex(0);
-            if (onSelect) {
-              onSelect(response.data[0]._id);
-            }
-          }
-        } else {
-          setError('Failed to fetch configurations.');
-          console.error('Error fetching configurations:', response.statusText);
-        }
-      } catch (error) {
-        setError('An error occurred while fetching configurations.');
-        console.error('Error fetching configurations:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchConfigurations();
-  }, [API_URL, onSelect]);
 
   const handleClickListItem = (event) => {
     setAnchorEl(event.currentTarget);
